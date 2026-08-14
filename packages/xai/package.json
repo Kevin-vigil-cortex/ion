@@ -1,0 +1,14 @@
+{
+  "name": "@ion/xai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "xAI provider layer: API-key + SuperGrok OAuth auth, streaming Responses API client",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ion/agent": "*"
+  }
+}

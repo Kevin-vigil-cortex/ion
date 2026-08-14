@@ -1,0 +1,14 @@
+node_modules/
+dist/
+out/
+release/
+*.tsbuildinfo
+.DS_Store
+*.log
+*.local
+.env
+.env.*
+.playwright-cli/
+
+# Local Ion data (chats, tokens, memories). Lives in ~/.ion — never commit it.
+.ion/

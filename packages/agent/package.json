@@ -1,0 +1,14 @@
+{
+  "name": "@ion/agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Provider-agnostic agent harness: loop, tool system, session memory",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.2"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "ion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source agent harness for xAI Grok — Cursor-style desktop app supporting API key or SuperGrok OAuth",
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w apps/desktop",
+    "build": "npm run build -w apps/desktop",
+    "package": "npm run package -w @ion/desktop",
+    "proxy": "npm run start -w packages/proxy",
+    "typecheck": "npm run typecheck -w @ion/agent && npm run typecheck -w @ion/xai && npm run typecheck -w @ion/proxy && npm run typecheck -w @ion/desktop",
+    "smoke": "tsx scripts/smoke-agent.ts && tsx scripts/smoke-xai.ts && tsx scripts/smoke-tools.ts && tsx scripts/smoke-oauth.ts && tsx scripts/smoke-proxy.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
+  }
+}

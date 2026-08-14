@@ -1,0 +1,30 @@
+appId: com.ion.desktop
+productName: Ion
+# Exact version required: electron is hoisted to the monorepo root, so
+# electron-builder cannot resolve the ^ range from this workspace.
+electronVersion: 43.4.0
+directories:
+  buildResources: build
+  output: release
+# Main, preload, and renderer are fully bundled by electron-vite (workspace
+# packages included), so node_modules is not needed inside the app.
+files:
+  - out/**
+  - resources/**
+  - '!node_modules/**'
+asar: true
+npmRebuild: false
+electronLanguages:
+  - en
+mac:
+  category: public.app-category.developer-tools
+  darkModeSupport: true
+  # electron-builder's own signing is skipped; scripts/sign-mac.cjs signs the
+  # bundle afterwards — with the "Ion Dev" self-signed cert when present (so
+  # macOS TCC permission grants persist across rebuilds) or ad-hoc otherwise.
+  # (The Apple Development cert is unusable: no provisioning profile.)
+  identity: null
+  target:
+    - target: dir
+      arch:
+        - arm64
