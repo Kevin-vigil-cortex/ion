@@ -228,7 +228,11 @@ export class AgentSession {
   private activeTools(): Tool[] {
     let list = this.toolList
     if (this.planMode) {
-      list = list.filter((t) => !t.dangerous || t.name === 'open_workspace')
+      // Keep open_workspace (open a project to read it) and code_review
+      // (reads the diff, mutates nothing; approval still gates the upload).
+      list = list.filter(
+        (t) => !t.dangerous || t.name === 'open_workspace' || t.name === 'code_review'
+      )
     }
     if (this.session.workspaceRoot) return list
     return list.filter((t) => t.requiresWorkspace === false)

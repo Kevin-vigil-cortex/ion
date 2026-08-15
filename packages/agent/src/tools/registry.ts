@@ -6,6 +6,7 @@ import { runTerminalTool } from './terminal'
 import { findPathTool } from './find-path'
 import { gitDiffTool, gitCommitTool } from './git'
 import { getDiagnosticsTool } from './diagnostics'
+import { codeReviewTool } from './code-review'
 
 export const defaultTools: Tool[] = [
   readFileTool,
@@ -18,7 +19,8 @@ export const defaultTools: Tool[] = [
   findPathTool,
   gitDiffTool,
   gitCommitTool,
-  getDiagnosticsTool
+  getDiagnosticsTool,
+  codeReviewTool
 ]
 
 /** Index tools by name for O(1) dispatch. */

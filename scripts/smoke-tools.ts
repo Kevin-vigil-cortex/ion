@@ -11,6 +11,8 @@ import { join } from 'node:path'
 import {
   AgentSession,
   SessionStore,
+  defaultTools,
+  codeReviewArgs,
   createBrowserTools,
   createComputerTools,
   type BrowserController,
@@ -130,6 +132,26 @@ function registrationCheck(): void {
   assert(computer.every((t) => t.dangerous === true), 'ALL computer tools are dangerous')
   assert(computer.every((t) => t.requiresWorkspace === false), 'computer tools need no workspace')
   console.log('smoke-tools: registration PASS')
+}
+
+/** CodeRabbit wrapper: argv + registry. Does not call the real CLI. */
+function codeReviewCheck(): void {
+  const tool = defaultTools.find((t) => t.name === 'code_review')
+  assert(tool, 'code_review is in defaultTools')
+  // Read-only locally, but it uploads the diff to CodeRabbit — approval-gated.
+  assert(tool!.dangerous === true, 'code_review requires approval')
+  assert(
+    JSON.stringify(codeReviewArgs()) ===
+      JSON.stringify(['review', '--agent', '--type', 'uncommitted']),
+    'default review is uncommitted --agent'
+  )
+  assert(
+    JSON.stringify(codeReviewArgs({ type: 'all', light: true, base: 'main' })) ===
+      JSON.stringify(['review', '--agent', '--type', 'all', '--light', '--base', 'main']),
+    'all + light + base flags'
+  )
+  assert(tool!.summarize({ type: 'committed', light: true }) === 'CodeRabbit committed light', 'summarize')
+  console.log('smoke-tools: code-review PASS')
 }
 
 /**
@@ -435,6 +457,7 @@ async function userAttachmentPersistCheck(): Promise<void> {
 
 async function main(): Promise<void> {
   registrationCheck()
+  codeReviewCheck()
   await browserFlowCheck()
   await computerGateCheck()
   await imageCapCheck()

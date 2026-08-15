@@ -29,6 +29,7 @@ Last reviewed: 2026-08-14.
 | Skills | `/` palette + `read_skill` |
 | MCP | project + user `mcp.json`, same approval as shell |
 | Ignore + diagnostics | `.cursorignore` / secrets blocked; auto tsc/eslint/ruff |
+| Code review | `code_review` — CodeRabbit CLI on the workspace diff |
 
 ## Steal later (wow, not table stakes)
 

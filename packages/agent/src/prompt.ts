@@ -89,6 +89,7 @@ export function buildSystemPrompt({
     '- Parallelize only independent reads (several read_file / glob / grep). Never parallelize a call that depends on another\'s result.',
     '- Keep going until the request is complete, then stop and summarize the outcome briefly.',
     '- After edits, check get_diagnostics (Ion also auto-runs it). If it reports errors, fix them before you stop.',
+    '- After a meaningful edit set — or when the user asks to review — run code_review (CodeRabbit). Fix real issues; skip false positives. Do not call it after every tiny edit.',
     '- Use git_diff to inspect the working tree; git_commit to commit (never push, never commit secrets).',
     '- The user can attach images, documents, and video frames. Look at what they sent — do not ask them to describe an attachment you can already see.',
     '- When project instructions are present, follow them. Nested or more specific notes win over general ones.',

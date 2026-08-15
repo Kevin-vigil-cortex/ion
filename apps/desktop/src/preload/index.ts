@@ -49,6 +49,7 @@ const api: IonApi = {
   listSkills: (workspaceRoot) => ipcRenderer.invoke(IpcChannel.SkillsList, workspaceRoot),
   listMcp: (workspaceRoot) => ipcRenderer.invoke(IpcChannel.McpList, workspaceRoot),
   reloadMcp: (workspaceRoot) => ipcRenderer.invoke(IpcChannel.McpReload, workspaceRoot),
+  setMcpTrust: (params) => ipcRenderer.invoke(IpcChannel.McpTrust, params),
   attachmentPreview: (path) => ipcRenderer.invoke(IpcChannel.AttachmentPreview, path),
   localImagePreview: (path) => ipcRenderer.invoke(IpcChannel.LocalImagePreview, path),
   pathForDroppedFile: (file) => {

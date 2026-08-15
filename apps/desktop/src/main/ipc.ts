@@ -207,6 +207,11 @@ export function registerIpc(deps: IpcDeps): void {
     runtime.reloadMcp(workspaceRoot)
   )
   ipcMain.handle(
+    IpcChannel.McpTrust,
+    (_e, params: { workspaceRoot: string; trusted: boolean }) =>
+      runtime.setMcpTrust(params.workspaceRoot, params.trusted)
+  )
+  ipcMain.handle(
     IpcChannel.WorkspaceSuggest,
     (_e, p: { workspaceRoot: string; query: string }) =>
       suggestWorkspacePaths(p.workspaceRoot, p.query)

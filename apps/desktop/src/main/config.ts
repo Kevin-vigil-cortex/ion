@@ -15,6 +15,8 @@ interface StoredConfig {
   computerUseEnabled: boolean
   baseUrl: string
   proxyPort: number
+  /** Workspace roots allowed to start MCP servers from their own .mcp.json. */
+  trustedMcpRoots: string[]
 }
 
 const DEFAULTS: StoredConfig = {
@@ -30,7 +32,9 @@ const DEFAULTS: StoredConfig = {
   // OS-level control is opt-in only.
   computerUseEnabled: false,
   baseUrl: DEFAULT_BASE_URL,
-  proxyPort: 8787
+  proxyPort: 8787,
+  // A repo's own .mcp.json can run arbitrary commands: off until trusted.
+  trustedMcpRoots: []
 }
 
 /**
@@ -115,6 +119,18 @@ export class ConfigStore {
 
   async setComputerUseEnabled(value: boolean): Promise<void> {
     this.data.computerUseEnabled = value
+    await this.persist()
+  }
+
+  isMcpTrusted(workspaceRoot: string): boolean {
+    return this.data.trustedMcpRoots.includes(workspaceRoot)
+  }
+
+  async setMcpTrust(workspaceRoot: string, trusted: boolean): Promise<void> {
+    const roots = new Set(this.data.trustedMcpRoots)
+    if (trusted) roots.add(workspaceRoot)
+    else roots.delete(workspaceRoot)
+    this.data.trustedMcpRoots = [...roots]
     await this.persist()
   }
 

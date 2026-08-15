@@ -212,6 +212,7 @@ interface AppState {
   setSettingsOpen(open: boolean): void
   refreshMcp(): Promise<void>
   reloadMcp(): Promise<void>
+  setMcpTrust(trusted: boolean): Promise<void>
   refreshConfig(): Promise<void>
   setApiKey(key: string): Promise<void>
   clearApiKey(): Promise<void>
@@ -377,6 +378,10 @@ function flushStreamDeltas(): void {
 
 export const useStore = create<AppState>((set, get) => {
   let drainingQueue = false
+  // initialize() can run more than once (StrictMode, remounts); the IPC
+  // subscriptions below must only ever be registered once or every agent
+  // event gets handled twice.
+  let subscribed = false
   return {
   config: null,
   models: [],
@@ -425,6 +430,9 @@ export const useStore = create<AppState>((set, get) => {
       draftModel: config.defaultModel,
       draftEffort: config.defaultEffort ?? 'medium'
     })
+
+    if (subscribed) return
+    subscribed = true
 
     api.onAgentEvent(({ sessionId, event }) => {
       if (sessionId !== get().currentSessionId) {
@@ -1026,6 +1034,12 @@ export const useStore = create<AppState>((set, get) => {
 
   async reloadMcp() {
     set({ mcpServers: await api.reloadMcp(get().draftWorkspace) })
+  },
+
+  async setMcpTrust(trusted) {
+    const workspaceRoot = get().draftWorkspace
+    if (!workspaceRoot) return
+    set({ mcpServers: await api.setMcpTrust({ workspaceRoot, trusted }) })
   },
 
   async refreshConfig() {

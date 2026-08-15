@@ -7,6 +7,13 @@ const PROJECT_MCP_FILES = ['.mcp.json', '.ion/mcp.json', '.cursor/mcp.json']
 export interface LoadMcpOptions {
   /** Override user mcp.json paths (tests). Default: ~/.cursor + ~/.ion. */
   userFiles?: string[]
+  /**
+   * Honor the project's own mcp.json (arbitrary commands checked into the
+   * repo). Default false: project servers are listed as blocked — never
+   * started, never allowed to override a user server — until the host marks
+   * the workspace trusted.
+   */
+  trustProject?: boolean
 }
 
 export interface McpServerSpec {
@@ -19,6 +26,8 @@ export interface McpServerSpec {
   headers: Record<string, string>
   disabled: boolean
   autoApprove: string[]
+  /** Project server in an untrusted workspace: listed but never started. */
+  blocked: boolean
 }
 
 export interface McpInterpContext {
@@ -46,9 +55,16 @@ export async function loadMcpConfig(
     for (const spec of await readMcpFile(file, 'user', ctx)) byName.set(spec.name, spec)
   }
   if (workspaceRoot) {
+    const trusted = options?.trustProject === true
     for (const rel of PROJECT_MCP_FILES) {
       for (const spec of await readMcpFile(join(workspaceRoot, rel), 'project', ctx)) {
-        byName.set(spec.name, spec)
+        if (trusted) {
+          byName.set(spec.name, spec)
+        } else if (!byName.has(spec.name)) {
+          // Untrusted repo: show what it wants to run, but don't run it and
+          // never let it hijack a user-configured server of the same name.
+          byName.set(spec.name, { ...spec, blocked: true })
+        }
       }
     }
   }
@@ -113,7 +129,8 @@ function parseServer(
     url,
     headers: stringMap(raw.headers, ctx),
     disabled: raw.disabled === true,
-    autoApprove: stringList(raw.autoApprove)
+    autoApprove: stringList(raw.autoApprove),
+    blocked: false
   }
 }
 

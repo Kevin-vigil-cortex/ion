@@ -11,6 +11,7 @@ import {
   MonitorDot,
   GitBranch,
   Bug,
+  Rabbit,
   Sparkles,
   Plug
 } from 'lucide-react'
@@ -28,6 +29,7 @@ const VERBS: Record<string, [string, string]> = {
   git_diff: ['Diffing', 'Diffed'],
   git_commit: ['Committing', 'Committed'],
   get_diagnostics: ['Checking', 'Checked'],
+  code_review: ['Reviewing', 'Reviewed'],
   read_skill: ['Reading skill', 'Read skill'],
   open_workspace: ['Opening workspace', 'Opened workspace'],
   save_memory: ['Saving memory', 'Saved memory'],
@@ -84,6 +86,12 @@ export function objectFor(name: string, args: Record<string, unknown>): string {
       return s(args.message).slice(0, 48)
     case 'get_diagnostics':
       return Array.isArray(args.paths) ? args.paths.filter((p) => typeof p === 'string').join(' ') : ''
+    case 'code_review': {
+      const bits = [s(args.type) || 'uncommitted']
+      if (args.light === true) bits.push('light')
+      if (s(args.base)) bits.push(`vs ${s(args.base)}`)
+      return bits.join(' ')
+    }
     case 'read_skill':
       return s(args.file) ? `${s(args.name)} ${s(args.file)}` : s(args.name)
     case 'find_path':
@@ -127,6 +135,8 @@ export function iconFor(name: string): React.JSX.Element {
       return <GitBranch size={13} />
     case 'get_diagnostics':
       return <Bug size={13} />
+    case 'code_review':
+      return <Rabbit size={13} />
     case 'read_skill':
       return <Sparkles size={13} />
     case 'browser_screenshot':

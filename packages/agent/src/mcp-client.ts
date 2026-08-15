@@ -12,7 +12,7 @@ const PROTOCOL = '2024-11-05'
 export interface McpServerStatus {
   name: string
   source: 'user' | 'project'
-  status: 'connected' | 'error' | 'skipped'
+  status: 'connected' | 'error' | 'skipped' | 'blocked'
   transport: 'stdio' | 'http'
   toolCount: number
   error?: string
@@ -53,6 +53,17 @@ export async function startMcpHub(
   await Promise.all(
     specs.map(async (spec) => {
       const transport: McpServerStatus['transport'] = spec.command ? 'stdio' : 'http'
+      if (spec.blocked) {
+        status.push({
+          name: spec.name,
+          source: spec.source,
+          status: 'blocked',
+          transport,
+          toolCount: 0,
+          error: 'workspace not trusted'
+        })
+        return
+      }
       if (spec.disabled) {
         status.push({
           name: spec.name,

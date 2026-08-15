@@ -98,8 +98,11 @@ export function startProxyServer(options: ProxyServerOptions): Promise<ProxyServ
     sendJson(res, 404, { error: { message: `No route for ${method} ${url}` } })
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
+    // Without this, a bind failure (port in use) leaves the promise pending forever.
+    server.once('error', reject)
     server.listen(options.port, host, () => {
+      server.removeListener('error', reject)
       const addr = server.address()
       const port = typeof addr === 'object' && addr ? addr.port : options.port
       resolve({

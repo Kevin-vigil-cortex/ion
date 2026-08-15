@@ -64,9 +64,19 @@ function createWindow(): BrowserWindow {
     if (!allowed) event.preventDefault()
   })
 
-  // Open external links in the system browser, never inside the app
+  // Open external links in the system browser, never inside the app.
+  // Web-ish schemes only: a crafted link in rendered output must not be able
+  // to launch arbitrary protocol handlers (file:, app schemes, …).
   win.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url)
+    let scheme: string
+    try {
+      scheme = new URL(url).protocol
+    } catch {
+      return { action: 'deny' }
+    }
+    if (scheme === 'http:' || scheme === 'https:' || scheme === 'mailto:') {
+      void shell.openExternal(url)
+    }
     return { action: 'deny' }
   })
 

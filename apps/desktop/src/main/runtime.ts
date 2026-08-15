@@ -65,6 +65,8 @@ function approvalPredicate(mode: ApprovalMode): (tool: Tool) => boolean {
     tool.name !== 'run_terminal' &&
     tool.name !== 'git_commit' &&
     tool.name !== 'save_memory' &&
+    // Ships the workspace diff to CodeRabbit's service — always ask first.
+    tool.name !== 'code_review' &&
     !tool.name.startsWith('computer_') &&
     !tool.name.startsWith('mcp_')
 }
@@ -86,6 +88,10 @@ export class AgentRuntime {
   /** Live MCP connections, keyed by workspace root ('' if none). */
   private readonly mcpHubs = new Map<string, McpHub>()
   private readonly mcpInflight = new Map<string, Promise<McpHub>>()
+  /** Bumped on reload/close so a stale connect cannot overwrite the live hub. */
+  private readonly mcpGen = new Map<string, number>()
+  /** Agents that must be rebuilt on the next send (late MCP connect, etc.). */
+  private readonly staleAgents = new Set<string>()
 
   constructor(
     private readonly config: ConfigStore,
@@ -103,9 +109,14 @@ export class AgentRuntime {
     return this.memory
   }
 
-  /** Drop cached agents so the next send picks up new auth/transport config. */
+  /**
+   * Rebuild agents so the next send picks up new auth/transport config.
+   * Running agents finish their turn first (marked stale, rebuilt when idle):
+   * dropping one mid-turn would let a concurrent send spawn a duplicate
+   * AgentSession for the same session id.
+   */
   invalidateAgents(): void {
-    this.agents.clear()
+    this.invalidateIdleAgents()
   }
 
   async listSessions(): Promise<SessionMeta[]> {
@@ -131,7 +142,11 @@ export class AgentRuntime {
   }
 
   async deleteSession(id: string): Promise<void> {
+    // Stop any in-flight turn (and release its pending approvals) before the
+    // session data disappears underneath it.
+    this.abort(id)
     this.agents.delete(id)
+    this.staleAgents.delete(id)
     await this.store.delete(id)
     await deleteSessionAttachments(id)
   }
@@ -195,15 +210,32 @@ export class AgentRuntime {
   async listMcp(workspaceRoot: string | null): Promise<McpServerInfo[]> {
     const live = this.mcpHubs.get(mcpKey(workspaceRoot))
     if (live) return live.status
-    const specs = await loadMcpConfig(workspaceRoot)
+    const specs = await loadMcpConfig(workspaceRoot, {
+      trustProject: this.mcpTrusted(workspaceRoot)
+    })
     return specs.map((s) => ({
       name: s.name,
       source: s.source,
-      status: s.disabled ? 'skipped' : 'idle',
+      status: s.blocked ? 'blocked' : s.disabled ? 'skipped' : 'idle',
       transport: s.command ? 'stdio' : 'http',
       toolCount: 0,
-      ...(s.disabled ? { error: 'disabled' } : {})
+      ...(s.blocked
+        ? { error: 'workspace not trusted' }
+        : s.disabled
+          ? { error: 'disabled' }
+          : {})
     }))
+  }
+
+  /** Only trusted workspaces may start servers from their own .mcp.json. */
+  private mcpTrusted(workspaceRoot: string | null): boolean {
+    return workspaceRoot !== null && this.config.isMcpTrusted(workspaceRoot)
+  }
+
+  /** Trust (or untrust) a workspace's project mcp.json, then reconnect. */
+  async setMcpTrust(workspaceRoot: string, trusted: boolean): Promise<McpServerInfo[]> {
+    await this.config.setMcpTrust(workspaceRoot, trusted)
+    return this.reloadMcp(workspaceRoot)
   }
 
   async reloadMcp(workspaceRoot: string | null): Promise<McpServerInfo[]> {
@@ -213,6 +245,9 @@ export class AgentRuntime {
   }
 
   async closeMcp(): Promise<void> {
+    for (const key of new Set([...this.mcpHubs.keys(), ...this.mcpInflight.keys()])) {
+      this.mcpGen.set(key, (this.mcpGen.get(key) ?? 0) + 1)
+    }
     const hubs = [...this.mcpHubs.values()]
     this.mcpHubs.clear()
     this.mcpInflight.clear()
@@ -222,6 +257,7 @@ export class AgentRuntime {
   private async ensureMcp(workspaceRoot: string | null, reconnect = false): Promise<McpHub> {
     const key = mcpKey(workspaceRoot)
     if (reconnect) {
+      this.mcpGen.set(key, (this.mcpGen.get(key) ?? 0) + 1)
       const old = this.mcpHubs.get(key)
       this.mcpHubs.delete(key)
       this.mcpInflight.delete(key)
@@ -231,17 +267,62 @@ export class AgentRuntime {
     if (cached) return cached
     const inflight = this.mcpInflight.get(key)
     if (inflight) return inflight
-    const pending = startMcpHub(workspaceRoot).then((hub) => {
-      this.mcpHubs.set(key, hub)
-      this.mcpInflight.delete(key)
-      return hub
-    })
+    const gen = this.mcpGen.get(key) ?? 0
+    let pending!: Promise<McpHub>
+    pending = startMcpHub(workspaceRoot, { trustProject: this.mcpTrusted(workspaceRoot) }).then(
+      (hub) => {
+        if ((this.mcpGen.get(key) ?? 0) !== gen) {
+          // A reload/close superseded this connect: shut the orphan down and
+          // fail, so no caller ever holds a closed hub.
+          void hub.close().catch(() => undefined)
+          if (this.mcpInflight.get(key) === pending) this.mcpInflight.delete(key)
+          throw new Error('MCP connection superseded by a reload.')
+        }
+        this.mcpHubs.set(key, hub)
+        if (this.mcpInflight.get(key) === pending) this.mcpInflight.delete(key)
+        return hub
+      },
+      (err: unknown) => {
+        if (this.mcpInflight.get(key) === pending) this.mcpInflight.delete(key)
+        throw err
+      }
+    )
     this.mcpInflight.set(key, pending)
-    try {
-      return await pending
-    } catch (err) {
-      this.mcpInflight.delete(key)
-      throw err
+    return pending
+  }
+
+  /**
+   * ensureMcp with a hard budget so a hung MCP server (e.g. one waiting on an
+   * editor that isn't running) can never stall a chat send. Past the budget
+   * the send proceeds without MCP tools; when the connect eventually lands,
+   * idle agents are dropped so the next message picks the tools up.
+   */
+  private async ensureMcpBudgeted(workspaceRoot: string | null): Promise<McpHub | null> {
+    const pending = this.ensureMcp(workspaceRoot)
+    const winner = await Promise.race([
+      pending.catch(() => null),
+      new Promise<'timeout'>((r) => setTimeout(() => r('timeout'), MCP_CONNECT_BUDGET_MS))
+    ])
+    if (winner !== 'timeout') return winner
+    void pending.then(
+      () => this.invalidateIdleAgents(),
+      () => undefined
+    )
+    return null
+  }
+
+  /**
+   * Drop idle agents immediately. Running ones keep this turn's toolset, but
+   * are marked stale so the next send rebuilds (picks up late MCP tools).
+   */
+  private invalidateIdleAgents(): void {
+    for (const [id, agent] of this.agents) {
+      if (!agent.isRunning()) {
+        this.agents.delete(id)
+        this.staleAgents.delete(id)
+      } else {
+        this.staleAgents.add(id)
+      }
     }
   }
 
@@ -498,7 +579,11 @@ export class AgentRuntime {
 
   private async getOrCreateAgent(sessionId: string): Promise<AgentSession> {
     const cached = this.agents.get(sessionId)
-    if (cached) return cached
+    if (cached) {
+      if (!this.staleAgents.has(sessionId) || cached.isRunning()) return cached
+      this.agents.delete(sessionId)
+      this.staleAgents.delete(sessionId)
+    }
 
     const session = await this.store.load(sessionId)
     if (!session) throw new Error(`Session ${sessionId} not found.`)
@@ -517,8 +602,8 @@ export class AgentRuntime {
     if (this.config.raw.computerUseEnabled && process.platform === 'darwin') {
       tools.push(...createComputerTools(this.computer))
     }
-    const mcp = await this.ensureMcp(session.workspaceRoot)
-    tools.push(...mcp.tools)
+    const mcp = await this.ensureMcpBudgeted(session.workspaceRoot)
+    if (mcp) tools.push(...mcp.tools)
 
     const userRules = (await readUserRules()).trim() || null
     const agent = new AgentSession({
@@ -549,6 +634,9 @@ export class AgentRuntime {
     return agent
   }
 }
+
+/** How long a chat send waits for MCP servers before starting without them. */
+const MCP_CONNECT_BUDGET_MS = 2_500
 
 function mcpKey(workspaceRoot: string | null): string {
   return workspaceRoot ?? ''

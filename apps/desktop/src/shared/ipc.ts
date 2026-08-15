@@ -100,7 +100,8 @@ export interface SkillInfo {
 export interface McpServerInfo {
   name: string
   source: 'user' | 'project'
-  status: 'idle' | 'connected' | 'error' | 'skipped'
+  /** 'blocked': defined by the project's mcp.json in an untrusted workspace. */
+  status: 'idle' | 'connected' | 'error' | 'skipped' | 'blocked'
   transport: 'stdio' | 'http'
   toolCount: number
   error?: string
@@ -181,7 +182,8 @@ export const IpcChannel = {
   GitSuggestMessage: 'git:suggestMessage',
   SkillsList: 'skills:list',
   McpList: 'mcp:list',
-  McpReload: 'mcp:reload'
+  McpReload: 'mcp:reload',
+  McpTrust: 'mcp:trust'
 } as const
 
 /** Channels pushed from main -> renderer (fire-and-forget). */
@@ -270,6 +272,8 @@ export interface IonApi {
   listSkills(workspaceRoot: string | null): Promise<SkillInfo[]>
   listMcp(workspaceRoot: string | null): Promise<McpServerInfo[]>
   reloadMcp(workspaceRoot: string | null): Promise<McpServerInfo[]>
+  /** Allow (or revoke) this workspace's own .mcp.json servers, then reconnect. */
+  setMcpTrust(params: { workspaceRoot: string; trusted: boolean }): Promise<McpServerInfo[]>
   /** Data-URL preview for an image stored under ~/.ion/attachments. */
   attachmentPreview(path: string): Promise<string | null>
   /** Data-URL preview for a Finder-dropped image still at its original path. */

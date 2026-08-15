@@ -20,6 +20,7 @@ export type { McpHub, McpServerStatus } from './mcp-client'
 export { loadIgnoreSet, parseIgnoreContents, isSecretPath, IgnoreSet } from './ignore'
 export { formatGitDiff, commitPaths } from './tools/git'
 export { collectDiagnostics } from './tools/diagnostics'
+export { runCodeReview, codeReviewArgs } from './tools/code-review'
 export { summarizeEdit } from './diff'
 export { matchGlob, parseGlobList } from './glob'
 export {

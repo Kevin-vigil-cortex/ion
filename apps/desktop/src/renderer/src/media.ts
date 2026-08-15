@@ -145,6 +145,10 @@ function readAsDataUrl(file: File): Promise<string> {
   })
 }
 
+/** A video that never loads/seeks must fail (→ ffmpeg fallback), not hang. */
+const VIDEO_LOAD_TIMEOUT_MS = 10_000
+const VIDEO_SEEK_TIMEOUT_MS = 5_000
+
 async function extractVideoFrames(
   file: File,
   count = 6
@@ -156,8 +160,18 @@ async function extractVideoFrames(
     video.preload = 'auto'
     video.src = url
     await new Promise<void>((resolve, reject) => {
-      video.onloadeddata = () => resolve()
-      video.onerror = () => reject(new Error('Could not decode video'))
+      const timer = window.setTimeout(
+        () => reject(new Error('Video decode timed out')),
+        VIDEO_LOAD_TIMEOUT_MS
+      )
+      video.onloadeddata = () => {
+        window.clearTimeout(timer)
+        resolve()
+      }
+      video.onerror = () => {
+        window.clearTimeout(timer)
+        reject(new Error('Could not decode video'))
+      }
     })
     const duration = Number.isFinite(video.duration) ? video.duration : 0
     const srcW = video.videoWidth || 1280
@@ -175,8 +189,15 @@ async function extractVideoFrames(
     for (let i = 0; i < n; i++) {
       const t = n === 1 ? 0 : (duration * i) / (n - 1)
       video.currentTime = Math.min(Math.max(t, 0), Math.max(duration - 0.05, 0))
-      await new Promise<void>((resolve) => {
-        video.onseeked = () => resolve()
+      await new Promise<void>((resolve, reject) => {
+        const timer = window.setTimeout(
+          () => reject(new Error('Video seek timed out')),
+          VIDEO_SEEK_TIMEOUT_MS
+        )
+        video.onseeked = () => {
+          window.clearTimeout(timer)
+          resolve()
+        }
       })
       ctx.drawImage(video, 0, 0, w, h)
       const blob = await new Promise<Blob | null>((resolve) =>

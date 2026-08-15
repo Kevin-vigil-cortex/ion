@@ -14,7 +14,15 @@ Later files override the same server name.
 | User | `~/.cursor/mcp.json`, then `~/.ion/mcp.json` |
 | Project | `.mcp.json`, `.ion/mcp.json`, `.cursor/mcp.json` |
 
-Project `.cursor/mcp.json` wins on a name clash.
+Project `.cursor/mcp.json` wins on a name clash — **once the workspace is
+trusted**.
+
+Project files are trust-gated: a repo's own `mcp.json` is arbitrary code, so
+opening a folder never starts its servers. They appear as **Blocked** in
+Settings → MCP until you click **Trust workspace** (stored under
+`trustedMcpRoots` in `~/.ion/config.json`; remove the entry to revoke). Until
+then a project file cannot start anything, override a user server's name, or
+apply its `autoApprove` list. User-scope files always work.
 
 ## Shape
 
@@ -48,8 +56,8 @@ Interpolation: `${env:NAME}`, `${workspaceFolder}`, `${userHome}`, `${pathSepara
 
 ## In the app
 
-Settings → MCP lists each server (idle / connected / error). **Reload** starts
-or restarts them. The first chat in a folder also connects. Tools show up as
-`mcp_<server>_<tool>`.
+Settings → MCP lists each server (idle / connected / error / blocked).
+**Reload** starts or restarts them. The first chat in a folder also connects.
+Tools show up as `mcp_<server>_<tool>`.
 
 Plan mode drops dangerous MCP tools and keeps auto-approved ones.

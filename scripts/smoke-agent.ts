@@ -703,7 +703,7 @@ async function mcpCheck(): Promise<void> {
   const dir = await mkdtemp(join(tmpdir(), 'ion-smoke-mcp-'))
   const userFile = join(dir, 'user-mcp.json')
   const ws = await ensureDir(join(dir, 'ws'))
-  const isolated = { userFiles: [userFile] }
+  const isolated = { userFiles: [userFile], trustProject: true }
 
   process.env.ION_MCP_TEST = 'from-env'
   assert(
@@ -761,6 +761,27 @@ async function mcpCheck(): Promise<void> {
     }),
     'utf8'
   )
+
+  // Untrusted (the default): the repo's own servers are blocked — listed but
+  // never started, and never allowed to hijack a user server's name.
+  const untrusted = await loadMcpConfig(ws, { userFiles: [userFile] })
+  const uEcho = untrusted.find((s) => s.name === 'echo')
+  assert(
+    uEcho?.source === 'user' && uEcho.command === 'wrong' && !uEcho.blocked,
+    'untrusted: project cannot override a user server'
+  )
+  assert(
+    untrusted.some((s) => s.name === 'remote' && s.blocked),
+    'untrusted: project-only server is listed as blocked'
+  )
+  const blockedHub = await startMcpHub(ws, { userFiles: [join(dir, 'none.json')] })
+  assert(
+    blockedHub.status.length > 0 &&
+      blockedHub.status.every((s) => s.status === 'blocked') &&
+      blockedHub.tools.length === 0,
+    'untrusted: hub starts nothing from the project mcp.json'
+  )
+  await blockedHub.close()
 
   const hub = await startMcpHub(ws, isolated)
   const echoStatus = hub.status.find((s) => s.name === 'echo')
@@ -1084,8 +1105,9 @@ async function main(): Promise<void> {
 
 /**
  * Plan mode: mutating tools (dangerous) are not offered — except
- * open_workspace, which stays so the agent can open a project to read — and
- * the system prompt carries the read-only planning instructions.
+ * open_workspace (open a project to read) and code_review (reads the diff,
+ * mutates nothing) — and the system prompt carries the read-only planning
+ * instructions.
  */
 async function planModeCheck(): Promise<void> {
   const dir = await mkdtemp(join(tmpdir(), 'ion-smoke-plan-'))
@@ -1145,6 +1167,7 @@ async function planModeCheck(): Promise<void> {
     'open_workspace',
     'git_diff',
     'get_diagnostics',
+    'code_review',
     'read_skill'
   ]) {
     assert(model.toolNames.includes(kept), `plan mode should still offer ${kept}`)

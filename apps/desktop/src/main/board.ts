@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from 'node:fs/promises'
+import { readFile, writeFile, mkdir, rename } from 'node:fs/promises'
 import { randomUUID } from 'node:crypto'
 import type { Board } from '../shared/ipc'
 import { APP_DIR, BOARD_PATH } from './paths'
@@ -36,7 +36,10 @@ export class BoardStore {
   async save(board: Board): Promise<Board> {
     const next: Board = { ...board, updatedAt: Date.now() }
     await mkdir(APP_DIR, { recursive: true })
-    await writeFile(BOARD_PATH, JSON.stringify(next, null, 2), 'utf8')
+    // Write-then-rename: a crash mid-write must not truncate the only copy.
+    const tmp = `${BOARD_PATH}.${randomUUID()}.tmp`
+    await writeFile(tmp, JSON.stringify(next, null, 2), 'utf8')
+    await rename(tmp, BOARD_PATH)
     return next
   }
 }

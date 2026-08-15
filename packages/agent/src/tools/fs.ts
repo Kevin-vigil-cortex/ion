@@ -194,9 +194,11 @@ export const editFileTool: Tool = {
         isError: true
       }
     }
+    // () => newStr keeps the replacement literal — a plain string would have
+    // its $-patterns ($&, $1, $') interpreted and corrupt the file.
     const updated = replaceAll
       ? original.split(oldStr).join(newStr)
-      : original.replace(oldStr, newStr)
+      : original.replace(oldStr, () => newStr)
     await writeFile(abs, updated, 'utf8')
     return {
       output: `Applied edit to ${displayPath(ctx.workspaceRoot, abs)} (${replaceAll ? occurrences : 1} replacement${replaceAll && occurrences > 1 ? 's' : ''}).`,

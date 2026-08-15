@@ -35,6 +35,7 @@ export default function SettingsModal(): React.JSX.Element | null {
   const setUserRules = useStore((s) => s.setUserRules)
   const mcpServers = useStore((s) => s.mcpServers)
   const reloadMcp = useStore((s) => s.reloadMcp)
+  const setMcpTrust = useStore((s) => s.setMcpTrust)
 
   const [keyInput, setKeyInput] = useState('')
   const [mcpBusy, setMcpBusy] = useState(false)
@@ -352,11 +353,31 @@ export default function SettingsModal(): React.JSX.Element | null {
                             ? 'Not started — send a message or Reload'
                             : s.status === 'skipped'
                               ? 'Disabled'
-                              : s.error || 'Failed'}
+                              : s.status === 'blocked'
+                                ? 'Blocked — workspace not trusted'
+                                : s.error || 'Failed'}
                       </div>
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+            {mcpServers.some((s) => s.status === 'blocked') && (
+              <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-line bg-card px-3 py-2">
+                <p className="text-xs text-ink-faint">
+                  This project's mcp.json defines servers. They stay off until you trust this
+                  workspace to run them.
+                </p>
+                <button
+                  onClick={() => {
+                    setMcpBusy(true)
+                    void setMcpTrust(true).finally(() => setMcpBusy(false))
+                  }}
+                  disabled={mcpBusy}
+                  className="shrink-0 rounded-md bg-white/[0.08] px-2.5 py-1 text-xs text-ink hover:bg-white/10 disabled:opacity-50"
+                >
+                  Trust workspace
+                </button>
               </div>
             )}
             <p className="mt-1 text-xs text-ink-faint">
