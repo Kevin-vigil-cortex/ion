@@ -162,10 +162,11 @@ installed copies update: bump `version` in `apps/desktop/package.json`, then
 GH_TOKEN=$(gh auth token) npm run release
 ```
 
-That publishes a GitHub Release. People download the `.dmg`. After that, Ion
-checks for newer releases on launch (and every few hours) and offers Restart
-when one is ready. The running app and the update must be signed with the
-same **Ion Dev** identity — `release` refuses to ship without it.
+That tags `v$version` (if needed) and publishes a GitHub Release. People
+download the `.dmg`. After that, Ion checks for newer releases on launch
+(and every few hours) and offers Restart when one is ready. The running
+app and the update must be signed with the same **Ion Dev** identity —
+`release` refuses to ship without it.
 
 First launch on another Mac: right-click → Open (self-signed, not notarized).
 

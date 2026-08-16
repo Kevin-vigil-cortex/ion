@@ -10,7 +10,7 @@
     "build": "electron-vite build",
     "preview": "env -u ELECTRON_RUN_AS_NODE electron-vite preview",
     "package": "electron-vite build && electron-builder --mac --dir",
-    "release": "electron-vite build && electron-builder --mac --publish always",
+    "release": "electron-vite build && node ../../scripts/ensure-release-tag.cjs && electron-builder --mac --publish always",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json"
   },
   "dependencies": {
