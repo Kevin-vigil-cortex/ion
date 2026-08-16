@@ -11,7 +11,8 @@ import {
   Globe,
   MonitorDot,
   Check,
-  Plug
+  Plug,
+  Download
 } from 'lucide-react'
 import { useStore } from '../store'
 import type { ApprovalMode } from '../../../shared/ipc'
@@ -36,6 +37,9 @@ export default function SettingsModal(): React.JSX.Element | null {
   const mcpServers = useStore((s) => s.mcpServers)
   const reloadMcp = useStore((s) => s.reloadMcp)
   const setMcpTrust = useStore((s) => s.setMcpTrust)
+  const updateStatus = useStore((s) => s.updateStatus)
+  const checkForUpdates = useStore((s) => s.checkForUpdates)
+  const installUpdate = useStore((s) => s.installUpdate)
 
   const [keyInput, setKeyInput] = useState('')
   const [mcpBusy, setMcpBusy] = useState(false)
@@ -449,6 +453,52 @@ export default function SettingsModal(): React.JSX.Element | null {
               {config.proxy.enabled
                 ? `Running at http://127.0.0.1:${config.proxy.port} — point any OpenAI client here to use your credentials.`
                 : `Exposes http://127.0.0.1:${config.proxy.port} so other tools can borrow your auth. Off by default.`}
+            </p>
+          </section>
+
+          {/* Updates */}
+          <section>
+            <div className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-faint">
+              Updates
+            </div>
+            <div className="flex items-center justify-between rounded-lg border border-line bg-card px-3 py-2.5">
+              <span className="flex items-center gap-2 text-sm text-ink">
+                <Download size={15} className="text-ink-muted" />
+                Ion v{config.appVersion}
+              </span>
+              {updateStatus?.state === 'downloaded' ? (
+                <button
+                  onClick={() => void installUpdate()}
+                  className="rounded-md bg-accent px-2.5 py-1 text-xs font-medium text-app hover:opacity-90"
+                >
+                  Restart to update{updateStatus.version ? ` to v${updateStatus.version}` : ''}
+                </button>
+              ) : (
+                <button
+                  onClick={() => void checkForUpdates()}
+                  disabled={
+                    updateStatus?.state === 'checking' ||
+                    updateStatus?.state === 'downloading' ||
+                    updateStatus?.state === 'unsupported'
+                  }
+                  className="rounded-md bg-white/[0.08] px-2.5 py-1 text-xs text-ink hover:bg-white/10 disabled:opacity-50"
+                >
+                  {updateStatus?.state === 'checking'
+                    ? 'Checking…'
+                    : updateStatus?.state === 'downloading'
+                      ? `Downloading… ${updateStatus.percent ?? 0}%`
+                      : 'Check for updates'}
+                </button>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-ink-faint">
+              {updateStatus?.state === 'none'
+                ? "You're on the latest version."
+                : updateStatus?.state === 'error'
+                  ? `Update check failed: ${updateStatus.message ?? 'unknown error'}`
+                  : updateStatus?.state === 'unsupported'
+                    ? updateStatus.message
+                    : 'Updates download in the background from GitHub Releases and apply when you restart.'}
             </p>
           </section>
         </div>

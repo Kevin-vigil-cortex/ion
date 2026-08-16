@@ -19,12 +19,29 @@ electronLanguages:
 mac:
   category: public.app-category.developer-tools
   darkModeSupport: true
-  # electron-builder's own signing is skipped; scripts/sign-mac.cjs signs the
-  # bundle afterwards — with the "Ion Dev" self-signed cert when present (so
-  # macOS TCC permission grants persist across rebuilds) or ad-hoc otherwise.
+  # electron-builder's own signing is skipped; scripts/eb-after-pack.cjs signs
+  # the packed bundle instead — with the "Ion Dev" self-signed cert when
+  # present (so macOS TCC permission grants persist across rebuilds and
+  # Squirrel.Mac accepts updates) or ad-hoc for local dir builds.
   # (The Apple Development cert is unusable: no provisioning profile.)
   identity: null
+  # zip feeds the auto-updater (Squirrel.Mac); dmg is the human download.
+  # `npm run package` still builds a plain dir via the --dir flag.
   target:
-    - target: dir
+    - target: zip
       arch:
         - arm64
+    - target: dmg
+      arch:
+        - arm64
+# Resolved from the monorepo root (electron-builder's detected workspace root).
+afterPack: scripts/eb-after-pack.cjs
+# Auto-update feed. electron-updater in the packaged app checks the newest
+# GitHub Release of this repo (latest-mac.yml + zip); `npm run release`
+# uploads there. The repo must exist and be PUBLIC before the first release.
+# releaseType: release = users get it immediately (no draft step).
+publish:
+  provider: github
+  owner: deadshot4444-blip
+  repo: ion
+  releaseType: release

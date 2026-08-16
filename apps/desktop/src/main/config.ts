@@ -139,8 +139,10 @@ export class ConfigStore {
     oauth: SafeConfig['oauth']
     proxyEnabled: boolean
     userRules?: string
+    appVersion: string
   }): SafeConfig {
     return {
+      appVersion: extra.appVersion,
       authMode: this.data.authMode,
       defaultModel: this.data.defaultModel,
       defaultEffort: this.data.defaultEffort,

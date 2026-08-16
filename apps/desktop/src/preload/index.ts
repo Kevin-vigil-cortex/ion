@@ -8,7 +8,8 @@ import type {
   ApprovalMode,
   Board,
   BrowserCursorEvent,
-  BrowserActivityEvent
+  BrowserActivityEvent,
+  UpdateStatus
 } from '../shared/ipc'
 import { IpcChannel, IpcEvent } from '../shared/ipc'
 
@@ -91,6 +92,9 @@ const api: IonApi = {
   gitCommit: (params) => ipcRenderer.invoke(IpcChannel.GitCommit, params),
   suggestCommitMessage: (params) => ipcRenderer.invoke(IpcChannel.GitSuggestMessage, params),
 
+  checkForUpdates: () => ipcRenderer.invoke(IpcChannel.UpdateCheck),
+  installUpdate: () => ipcRenderer.invoke(IpcChannel.UpdateInstall),
+
   onAgentEvent: (cb: (payload: AgentEventPayload) => void) => {
     const listener = (_e: unknown, payload: AgentEventPayload): void => cb(payload)
     ipcRenderer.on(IpcEvent.AgentEvent, listener)
@@ -110,6 +114,11 @@ const api: IonApi = {
     const listener = (_e: unknown, event: BrowserActivityEvent): void => cb(event)
     ipcRenderer.on(IpcEvent.BrowserActivity, listener)
     return () => ipcRenderer.removeListener(IpcEvent.BrowserActivity, listener)
+  },
+  onUpdateStatus: (cb: (status: UpdateStatus) => void) => {
+    const listener = (_e: unknown, status: UpdateStatus): void => cb(status)
+    ipcRenderer.on(IpcEvent.UpdateStatus, listener)
+    return () => ipcRenderer.removeListener(IpcEvent.UpdateStatus, listener)
   }
 }
 

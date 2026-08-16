@@ -1,4 +1,4 @@
-import { ipcMain, dialog, BrowserWindow } from 'electron'
+import { app, ipcMain, dialog, BrowserWindow } from 'electron'
 import type {
   AuthMode,
   ApprovalDecision,
@@ -27,6 +27,7 @@ import type { AuthManager } from './auth'
 import type { AgentRuntime } from './runtime'
 import type { ProxyManager } from './proxy'
 import type { BoardStore } from './board'
+import type { UpdaterManager } from './updater'
 
 export interface IpcDeps {
   config: ConfigStore
@@ -34,6 +35,7 @@ export interface IpcDeps {
   runtime: AgentRuntime
   proxy: ProxyManager
   board: BoardStore
+  updater: UpdaterManager
   /** Wired by oauth.ts; absent until then. */
   oauth?: {
     start: () => Promise<void>
@@ -48,7 +50,8 @@ export function registerIpc(deps: IpcDeps): void {
     config.toSafeConfig({
       oauth: auth.oauthState(),
       proxyEnabled: proxy.status().running,
-      userRules: await readUserRules()
+      userRules: await readUserRules(),
+      appVersion: app.getVersion()
     })
 
   ipcMain.handle(IpcChannel.ConfigGet, () => safeConfig())
@@ -313,4 +316,7 @@ export function registerIpc(deps: IpcDeps): void {
     runtime.invalidateAgents()
     return safeConfig()
   })
+
+  ipcMain.handle(IpcChannel.UpdateCheck, () => deps.updater.check())
+  ipcMain.handle(IpcChannel.UpdateInstall, () => deps.updater.install())
 }

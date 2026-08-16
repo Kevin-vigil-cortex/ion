@@ -6,6 +6,7 @@ import ChatView from './components/ChatView'
 import BoardView from './components/BoardView'
 import MemoriesView from './components/MemoriesView'
 import SettingsModal from './components/SettingsModal'
+import UpdateToast from './components/UpdateToast'
 import WorkspaceExplorer from './components/WorkspaceExplorer'
 import VideoBackground from './components/VideoBackground'
 import AttachmentDropTarget from './components/AttachmentDropTarget'
@@ -88,6 +89,7 @@ export default function App(): React.JSX.Element {
         </div>
       </main>
       <SettingsModal />
+      <UpdateToast />
     </div>
   )
 }

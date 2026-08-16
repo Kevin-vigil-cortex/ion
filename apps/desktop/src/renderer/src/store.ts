@@ -18,7 +18,8 @@ import type {
   SessionMode,
   WorkspaceMention,
   SkillInfo,
-  McpServerInfo
+  McpServerInfo,
+  UpdateStatus
 } from '../../shared/ipc'
 
 export type { WorkspaceMention, SkillInfo, McpServerInfo }
@@ -146,6 +147,7 @@ interface AppState {
   settingsOpen: boolean
   mcpServers: McpServerInfo[]
   oauthProgress: OAuthProgress | null
+  updateStatus: UpdateStatus | null
 
   view: AppView
   board: Board | null
@@ -210,6 +212,8 @@ interface AppState {
   applyStreamDeltas(text: string, reasoning: string): void
 
   setSettingsOpen(open: boolean): void
+  checkForUpdates(): Promise<void>
+  installUpdate(): Promise<void>
   refreshMcp(): Promise<void>
   reloadMcp(): Promise<void>
   setMcpTrust(trusted: boolean): Promise<void>
@@ -404,6 +408,7 @@ export const useStore = create<AppState>((set, get) => {
   settingsOpen: false,
   mcpServers: [],
   oauthProgress: null,
+  updateStatus: null,
   view: 'chat',
   board: null,
   memories: null,
@@ -476,6 +481,10 @@ export const useStore = create<AppState>((set, get) => {
           set({ browserPanelOpen: true, view: 'chat' })
         }
       })
+    }
+
+    if (api.onUpdateStatus) {
+      api.onUpdateStatus((status) => set({ updateStatus: status }))
     }
   },
 
@@ -691,7 +700,25 @@ export const useStore = create<AppState>((set, get) => {
       liveReasoning: '',
       ...clearDrafts
     }))
-    await api.sendMessage({ sessionId, ...wire })
+    try {
+      await api.sendMessage({ sessionId, ...wire })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      set((s) => ({
+        status: 'error',
+        thread: [...s.thread, { id: uid('e'), kind: 'error', message }]
+      }))
+      return
+    }
+    // send() always emits done on a clean finish. If that event was lost,
+    // don't leave the composer locked on Thinking.
+    const st = get().status
+    if (
+      get().currentSessionId === sessionId &&
+      (st === 'thinking' || st === 'streaming' || st === 'running_tool')
+    ) {
+      set({ status: 'idle', openAssistantId: null })
+    }
   },
 
   removeQueued(id) {
@@ -1026,6 +1053,14 @@ export const useStore = create<AppState>((set, get) => {
   setSettingsOpen(open) {
     set({ settingsOpen: open })
     if (open) void get().refreshMcp()
+  },
+
+  async checkForUpdates() {
+    set({ updateStatus: await api.checkForUpdates() })
+  },
+
+  async installUpdate() {
+    await api.installUpdate()
   },
 
   async refreshMcp() {

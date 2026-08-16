@@ -11,9 +11,11 @@ to authenticate:
 The agent core, the provider/auth layer, and the optional local proxy are cleanly
 separated so you can reuse or replace any piece.
 
-> Status: early but functional. Runs from source (`npm run dev`) and packages
-> into a local, ad-hoc-signed app bundle (`npm run package`). No signed/notarized
-> releases are distributed yet.
+> Status: early but functional. Runs from source (`npm run dev`), packages
+> locally (`npm run package`), and ships auto-updating builds from
+> [GitHub Releases](https://github.com/deadshot4444-blip/ion/releases)
+> (`npm run release`). Not Apple-notarized yet — first launch on someone
+> else's Mac needs right-click → Open.
 
 ## Features
 
@@ -149,13 +151,23 @@ and make no network calls.
 ## Packaging
 
 ```bash
-npm run package     # builds Ion.app into apps/desktop/release/ (gitignored)
+npm run package     # local Ion.app only (apps/desktop/release/, gitignored)
+npm run release     # zip + dmg, signed, uploaded to GitHub Releases
 ```
 
-Bundles the app with electron-builder using **ad-hoc signing** — fine for
-installing on your own machine (drag `release/mac-arm64/Ion.app` into
-`/Applications`), but other people's Macs will warn on first launch until
-notarized releases exist.
+`package` is for your machine. `release` is how other people get Ion and how
+installed copies update: bump `version` in `apps/desktop/package.json`, then
+
+```bash
+GH_TOKEN=$(gh auth token) npm run release
+```
+
+That publishes a GitHub Release. People download the `.dmg`. After that, Ion
+checks for newer releases on launch (and every few hours) and offers Restart
+when one is ready. The running app and the update must be signed with the
+same **Ion Dev** identity — `release` refuses to ship without it.
+
+First launch on another Mac: right-click → Open (self-signed, not notarized).
 
 ## Security
 

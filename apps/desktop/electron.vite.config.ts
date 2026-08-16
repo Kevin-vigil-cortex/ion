@@ -6,9 +6,13 @@ import tailwindcss from '@tailwindcss/vite'
 // than externalized to node_modules.
 const workspacePackages = ['@ion/agent', '@ion/xai', '@ion/proxy']
 
+// The packaged app excludes node_modules entirely, so every runtime dep of
+// the main process must be bundled too.
+const bundledDeps = [...workspacePackages, 'electron-updater']
+
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin({ exclude: workspacePackages })]
+    plugins: [externalizeDepsPlugin({ exclude: bundledDeps })]
   },
   preload: {
     plugins: [externalizeDepsPlugin({ exclude: workspacePackages })]

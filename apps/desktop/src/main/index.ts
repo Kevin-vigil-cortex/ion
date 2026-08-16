@@ -8,6 +8,7 @@ import { AgentRuntime } from './runtime'
 import { ProxyManager } from './proxy'
 import { OAuthManager } from './oauth'
 import { BoardStore } from './board'
+import { UpdaterManager } from './updater'
 import { registerIpc } from './ipc'
 
 function createWindow(): BrowserWindow {
@@ -104,6 +105,7 @@ async function bootstrap(): Promise<void> {
   const runtime = new AgentRuntime(config, auth)
   const proxy = new ProxyManager(config, auth)
   const board = new BoardStore()
+  const updater = new UpdaterManager()
 
   registerIpc({
     config,
@@ -111,6 +113,7 @@ async function bootstrap(): Promise<void> {
     runtime,
     proxy,
     board,
+    updater,
     oauth: {
       start: () => oauth.start().then(() => runtime.invalidateAgents()),
       signOut: () => oauth.signOut()
@@ -123,6 +126,7 @@ async function bootstrap(): Promise<void> {
   }
 
   createWindow()
+  updater.start()
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

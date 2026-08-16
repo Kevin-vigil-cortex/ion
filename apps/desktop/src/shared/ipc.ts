@@ -49,6 +49,8 @@ export interface SafeConfig {
   oauth: { signedIn: boolean; account: string | null; tierGated: boolean }
   /** Personal rules from ~/.ion/user-rules.md. */
   userRules: string
+  /** App version (package.json), shown in Settings next to update controls. */
+  appVersion: string
 }
 
 export type ApprovalDecision = 'approve' | 'approve_always' | 'deny'
@@ -128,6 +130,20 @@ export interface OAuthProgress {
   message?: string
 }
 
+/**
+ * Auto-update state, pushed from main on every change and returned by
+ * checkForUpdates. `unsupported` = dev run or a build packaged without an
+ * update feed (plain `npm run package`).
+ */
+export interface UpdateStatus {
+  state: 'idle' | 'unsupported' | 'checking' | 'none' | 'downloading' | 'downloaded' | 'error'
+  /** Version being downloaded / ready to install, when known. */
+  version?: string
+  /** Download progress, 0-100. */
+  percent?: number
+  message?: string
+}
+
 /** Channels invoked from renderer -> main (request/response). */
 export const IpcChannel = {
   ConfigGet: 'config:get',
@@ -183,7 +199,9 @@ export const IpcChannel = {
   SkillsList: 'skills:list',
   McpList: 'mcp:list',
   McpReload: 'mcp:reload',
-  McpTrust: 'mcp:trust'
+  McpTrust: 'mcp:trust',
+  UpdateCheck: 'update:check',
+  UpdateInstall: 'update:install'
 } as const
 
 /** Channels pushed from main -> renderer (fire-and-forget). */
@@ -191,7 +209,8 @@ export const IpcEvent = {
   AgentEvent: 'agent:event',
   OAuthProgress: 'auth:oauthProgress',
   BrowserCursor: 'browser:cursor',
-  BrowserActivity: 'browser:activity'
+  BrowserActivity: 'browser:activity',
+  UpdateStatus: 'update:status'
 } as const
 
 /**
@@ -316,8 +335,13 @@ export interface IonApi {
   openInEditor(params: { workspaceRoot: string; relPath: string; line?: number }): Promise<void>
   gitCommit(params: { workspaceRoot: string; message: string; paths: string[] }): Promise<string>
   suggestCommitMessage(params: { sessionId: string; workspaceRoot: string }): Promise<string>
+  /** Trigger an update check now; resolves with the status it settled on. */
+  checkForUpdates(): Promise<UpdateStatus>
+  /** Quit and apply the downloaded update. */
+  installUpdate(): Promise<void>
   onAgentEvent(cb: (payload: AgentEventPayload) => void): () => void
   onOAuthProgress(cb: (progress: OAuthProgress) => void): () => void
   onBrowserCursor(cb: (event: BrowserCursorEvent) => void): () => void
   onBrowserActivity(cb: (event: BrowserActivityEvent) => void): () => void
+  onUpdateStatus(cb: (status: UpdateStatus) => void): () => void
 }
