@@ -34,7 +34,9 @@ mac:
     - target: dmg
       arch:
         - arm64
-# Resolved from the monorepo root (electron-builder's detected workspace root).
+# Same relative path in both resolution contexts: repo root (npx from here)
+# and apps/desktop (npm run -w @ion/desktop). The desktop copy re-exports
+# the real hook at scripts/eb-after-pack.cjs.
 afterPack: scripts/eb-after-pack.cjs
 # Auto-update feed. electron-updater in the packaged app checks the newest
 # GitHub Release of this repo (latest-mac.yml + zip); `npm run release`
