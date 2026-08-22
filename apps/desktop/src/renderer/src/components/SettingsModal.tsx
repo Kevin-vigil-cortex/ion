@@ -182,7 +182,7 @@ export default function SettingsModal(): React.JSX.Element | null {
                     <AlertTriangle size={14} className="mt-0.5 shrink-0" />
                     <span>
                       xAI returned 403 for this account. OAuth API access may be gated for your tier
-                      — switch to an API key if inference keeps failing.
+                      - switch to an API key if inference keeps failing.
                     </span>
                   </div>
                 )}
@@ -297,7 +297,7 @@ export default function SettingsModal(): React.JSX.Element | null {
               />
             </label>
             <p className="mt-1 text-xs text-ink-faint">
-              When off, the model only sees your latest message — earlier turns in the chat are
+              When off, the model only sees your latest message - earlier turns in the chat are
               not sent. Your visible chat history is kept either way.
             </p>
 
@@ -354,11 +354,11 @@ export default function SettingsModal(): React.JSX.Element | null {
                         {s.status === 'connected'
                           ? `${s.toolCount} tool${s.toolCount === 1 ? '' : 's'}`
                           : s.status === 'idle'
-                            ? 'Not started — send a message or Reload'
+                            ? 'Not started - send a message or Reload'
                             : s.status === 'skipped'
                               ? 'Disabled'
                               : s.status === 'blocked'
-                                ? 'Blocked — workspace not trusted'
+                                ? 'Blocked - workspace not trusted'
                                 : s.error || 'Failed'}
                       </div>
                     </div>
@@ -425,7 +425,7 @@ export default function SettingsModal(): React.JSX.Element | null {
               />
             </label>
             <p className="mt-1 text-xs text-ink-faint">
-              Off by default. Lets the agent control your Mac — every action asks for approval
+              Off by default. Lets the agent control your Mac - every action asks for approval
               unless Permissions is set to Full access. Requires macOS permissions under System Settings &gt;
               Privacy &amp; Security: Screen Recording (screenshots) and Accessibility
               (mouse/keyboard).
@@ -451,7 +451,7 @@ export default function SettingsModal(): React.JSX.Element | null {
             </label>
             <p className="mt-1 text-xs text-ink-faint">
               {config.proxy.enabled
-                ? `Running at http://127.0.0.1:${config.proxy.port} — point any OpenAI client here to use your credentials.`
+                ? `Running at http://127.0.0.1:${config.proxy.port} - point any OpenAI client here to use your credentials.`
                 : `Exposes http://127.0.0.1:${config.proxy.port} so other tools can borrow your auth. Off by default.`}
             </p>
           </section>

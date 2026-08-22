@@ -6,7 +6,7 @@ import { iconFor, objectFor, parseArgs, verbFor } from '../tool-display'
 
 /**
  * One tool invocation: a slim borderless line. Click opens the inspector
- * column — never expands in the thread (that shoved the chat around).
+ * column - never expands in the thread (that shoved the chat around).
  */
 function ToolCard({ tool }: { tool: UiTool }): React.JSX.Element {
   const selected = useStore((s) => s.selectedToolId === tool.id)

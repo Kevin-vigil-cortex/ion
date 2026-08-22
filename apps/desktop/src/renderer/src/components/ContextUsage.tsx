@@ -171,7 +171,7 @@ export default function ContextUsage(): React.JSX.Element {
             </>
           ) : (
             <p className="mt-1.5 text-xs text-ink-faint">
-              Usage is covered by your SuperGrok subscription — no per-token cost.
+              Usage is covered by your SuperGrok subscription - no per-token cost.
             </p>
           )}
         </div>

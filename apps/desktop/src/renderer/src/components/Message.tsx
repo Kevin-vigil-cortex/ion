@@ -77,7 +77,7 @@ function Message({
 }: {
   message: UiMessage
   precedesTools?: boolean
-  /** Still receiving tokens — render plain text, not markdown. */
+  /** Still receiving tokens - render plain text, not markdown. */
   live?: boolean
 }): React.JSX.Element | null {
   if (message.role === 'user') {
@@ -170,7 +170,7 @@ function Message({
   )
 
   const text = message.content.trim()
-  // Live tokens start slim — don't open in a bubble and snap smaller when tools land.
+  // Live tokens start slim - don't open in a bubble and snap smaller when tools land.
   const slim = live || (precedesTools && text.length <= 200 && !text.includes('\n'))
   if (slim) {
     return (

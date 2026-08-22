@@ -45,7 +45,7 @@ export default function MemoriesView(): React.JSX.Element {
             {totalEntries} {totalEntries === 1 ? 'learning' : 'learnings'} the agent saved for
             future sessions
             {config && !config.learningEnabled && (
-              <span className="text-amber-300"> — self-learning is off, so none are used</span>
+              <span className="text-amber-300"> - self-learning is off, so none are used</span>
             )}
           </div>
         </div>

@@ -15,7 +15,7 @@ export default function UpdateToast(): React.JSX.Element | null {
     <div className="fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 shadow-2xl">
       <div>
         <div className="text-sm font-medium text-ink">
-          Update ready{status.version ? ` — v${status.version}` : ''}
+          Update ready{status.version ? ` - v${status.version}` : ''}
         </div>
         <div className="text-xs text-ink-faint">Restart Ion to apply it.</div>
       </div>
