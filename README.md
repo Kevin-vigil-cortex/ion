@@ -21,8 +21,9 @@ separated so you can reuse or replace any piece.
 
 Download the latest Ion build from
 [GitHub Releases](https://github.com/Kevin-vigil-cortex/ion/releases/latest).
-Prebuilt downloads currently support Apple Silicon macOS (`arm64`). Windows,
-Linux, and Intel macOS users can run Ion from source.
+Prebuilt downloads currently support Apple Silicon macOS (`arm64`). Linux and
+Intel macOS users can run Ion from source. Windows source use currently
+requires a POSIX-compatible shell such as Git Bash.
 
 ## Features
 
@@ -84,7 +85,7 @@ Linux, and Intel macOS users can run Ion from source.
 ## Requirements
 
 - Prebuilt app: Apple Silicon macOS (`arm64`)
-- Development from source: macOS, Windows, or Linux
+- Development from source: macOS, Linux, or Windows with Git Bash
 - Node.js 22+ and npm 10+
 
 ## Quick start
