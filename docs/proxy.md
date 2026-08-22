@@ -1,6 +1,6 @@
 # Local OpenAI-compatible proxy
 
-The proxy lets any OpenAI-style client use your Ion credentials —
+The proxy lets any OpenAI-style client use your Ion credentials -
 especially useful for the SuperGrok OAuth path, where the client would otherwise
 need to manage rotating tokens. It is **optional and off by default**.
 
@@ -40,7 +40,7 @@ XAI_BASE_URL=https://api.x.ai/v1 npm run proxy
 
 | Method + path | Upstream | Notes |
 |---|---|---|
-| `GET /health` | — | Liveness + configured upstream |
+| `GET /health` | - | Liveness + configured upstream |
 | `GET /v1/models` | `GET /models` | Passthrough with bearer injected |
 | `POST /v1/responses` | `POST /responses` | Passthrough (streaming preserved) |
 | `POST /v1/chat/completions` | `POST /responses` | Translated: `messages` -> `input` |

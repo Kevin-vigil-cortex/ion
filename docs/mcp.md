@@ -1,7 +1,7 @@
 # MCP
 
 Ion reads the same `mcp.json` files Cursor does and offers those tools to Grok.
-MCP calls use the **same approval story as the terminal** — they ask in Ask /
+MCP calls use the **same approval story as the terminal** - they ask in Ask /
 Approve-for-me, and run unprompted only in Full access (or when the server
 lists the tool in `autoApprove`).
 
@@ -14,7 +14,7 @@ Later files override the same server name.
 | User | `~/.cursor/mcp.json`, then `~/.ion/mcp.json` |
 | Project | `.mcp.json`, `.ion/mcp.json`, `.cursor/mcp.json` |
 
-Project `.cursor/mcp.json` wins on a name clash — **once the workspace is
+Project `.cursor/mcp.json` wins on a name clash - **once the workspace is
 trusted**.
 
 Project files are trust-gated: a repo's own `mcp.json` is arbitrary code, so

@@ -33,7 +33,7 @@ sandbox are treated as first-class concerns.
   any request carrying an `Origin` header (browsers always send one
   cross-origin; local CLI/SDK clients don't), and caps request bodies at 25 MB.
   Residual risk: while the proxy is running, **any local process** can use your
-  credentials through it — enabling it means trusting the machine it runs on.
+  credentials through it - enabling it means trusting the machine it runs on.
 
 ## Tool sandbox
 
@@ -45,7 +45,7 @@ sandbox are treated as first-class concerns.
   file-explorer IPC in `apps/desktop/src/main/workspace-fs.ts`).
 - `run_terminal` runs with the workspace as its working directory, captures
   output, and enforces a timeout. Note that a shell command itself is not
-  path-sandboxed — which is exactly why it is approval-gated.
+  path-sandboxed - which is exactly why it is approval-gated.
 - Dangerous tools (`write_file`, `edit_file`, `run_terminal`, `save_memory`,
   `open_workspace`, and all computer-use tools) require explicit in-chat
   approval by default. Settings > Permissions offers three modes: **Ask for
@@ -55,8 +55,8 @@ sandbox are treated as first-class concerns.
 
 ## Prompt injection
 
-Content the agent reads — web pages in the browser panel, files in a cloned
-repo — can contain adversarial instructions ("indirect prompt injection").
+Content the agent reads - web pages in the browser panel, files in a cloned
+repo - can contain adversarial instructions ("indirect prompt injection").
 Mitigations in place:
 
 - `save_memory` is approval-gated: injected text cannot silently persist
