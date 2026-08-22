@@ -2,7 +2,7 @@ import type { ConversationItem, ModelPricing } from './types'
 
 /**
  * Token estimation and cost math for context/usage reporting. Estimates use
- * the common ~4 chars/token heuristic — good enough for a fullness gauge;
+ * the common ~4 chars/token heuristic - good enough for a fullness gauge;
  * real billing numbers come from the provider's usage reports.
  */
 

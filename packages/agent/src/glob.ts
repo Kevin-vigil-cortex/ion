@@ -1,5 +1,5 @@
 // Tiny glob matcher for .cursor/rules frontmatter.
-// Not a full micromatch — covers the patterns those rules actually use.
+// Not a full micromatch - covers the patterns those rules actually use.
 
 export function matchGlob(pattern: string, filePath: string): boolean {
   const path = filePath.replace(/\\/g, '/').replace(/^\.\//, '')

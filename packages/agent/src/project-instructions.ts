@@ -80,7 +80,7 @@ async function loadCursorRules(
     const desc = parsed.frontmatter.description ?? parsed.frontmatter.desc
     if (decision === 'skip') continue
     if (decision === 'index') {
-      catalog.push(`- \`.cursor/rules/${name}\`${desc ? ` — ${desc}` : ''}`)
+      catalog.push(`- \`.cursor/rules/${name}\`${desc ? ` - ${desc}` : ''}`)
       continue
     }
     const room = budget - used

@@ -37,7 +37,7 @@ export function defaultUserSkillRoots(): string[] {
 
 /**
  * Discover SKILL.md packages (and flat `name.md` files). Later roots override
- * the same name — project `.cursor/skills` wins over user Ion skills.
+ * the same name - project `.cursor/skills` wins over user Ion skills.
  */
 export async function discoverSkills(
   workspaceRoot: string | null,
@@ -65,7 +65,7 @@ export function formatSkillCatalog(skills: SkillMeta[]): string | null {
     '',
     'Specialized playbooks. When a task matches a description, call read_skill',
     'with that name and follow the instructions. The user can also attach one',
-    'with `/` in the composer — those arrive as "Active skills" in their message.',
+    'with `/` in the composer - those arrive as "Active skills" in their message.',
     ''
   ]
   for (const s of listed) {

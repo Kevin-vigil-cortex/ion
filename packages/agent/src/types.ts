@@ -35,7 +35,7 @@ export type ConversationItem =
 /**
  * Encrypted reasoning from a Grok reasoning model. Must be echoed back on
  * the next request so the tool loop keeps its chain-of-thought. Opaque to
- * the UI — never display `encryptedContent`.
+ * the UI - never display `encryptedContent`.
  */
 export interface ReasoningItem {
   kind: 'reasoning'
@@ -58,11 +58,11 @@ export interface MessageAttachment {
   kind: AttachmentKind
   /** Absolute path under the host's attachments dir. */
   path: string
-  /** xAI Files API id — documents (and video if the API accepts it). */
+  /** xAI Files API id - documents (and video if the API accepts it). */
   fileId?: string
   /** Image bytes for vision input. Never written to the session JSON. */
   base64?: string
-  /** Model-only extras (e.g. sampled video frames) — hide in the bubble. */
+  /** Model-only extras (e.g. sampled video frames) - hide in the bubble. */
   silent?: boolean
 }
 
@@ -90,7 +90,7 @@ export interface ToolResultImage {
 
 /**
  * Files the agent changed in one user turn. Persisted for review / restore.
- * Never sent to the model — the loop strips these before each request.
+ * Never sent to the model - the loop strips these before each request.
  */
 export interface CheckpointFile {
   path: string
@@ -119,7 +119,7 @@ export interface ToolResultItem {
   isError: boolean
   /**
    * Optional images attached to this result. Held in memory for the next
-   * model call(s) only — the session store strips them on persist so base64
+   * model call(s) only - the session store strips them on persist so base64
    * payloads never bloat the on-disk transcript.
    */
   images?: ToolResultImage[]

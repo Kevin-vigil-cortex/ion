@@ -47,7 +47,7 @@ export type AgentEvent =
       workspaceRoot: string
     }
   | {
-      /** Files the agent changed this turn — drives the review card. */
+      /** Files the agent changed this turn - drives the review card. */
       type: 'turn_changes'
       checkpointId: string
       files: Array<{
