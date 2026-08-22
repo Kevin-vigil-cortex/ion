@@ -53,12 +53,12 @@ export const readFileTool: Tool = {
       }
     }
     if (info.isDirectory()) {
-      return { output: `"${rel}" is a directory — use list_dir to see its entries.`, isError: true }
+      return { output: `"${rel}" is a directory - use list_dir to see its entries.`, isError: true }
     }
     const buf = await readFile(abs)
     if (buf.includes(0)) {
       return {
-        output: `Binary file — cannot read "${rel}" as text. Use run_terminal for metadata (e.g. file, identify).`,
+        output: `Binary file - cannot read "${rel}" as text. Use run_terminal for metadata (e.g. file, identify).`,
         isError: true
       }
     }
@@ -82,7 +82,7 @@ export const readFileTool: Tool = {
       const window = lines.slice(start, end).join('\n')
       const footer =
         end < lines.length
-          ? `\n\n[lines ${start + 1}-${end} of ${lines.length}${truncated ? '+ (file truncated at 256KB)' : ''} — continue with offset: ${end + 1}]`
+          ? `\n\n[lines ${start + 1}-${end} of ${lines.length}${truncated ? '+ (file truncated at 256KB)' : ''} - continue with offset: ${end + 1}]`
           : `\n\n[lines ${start + 1}-${end} of ${lines.length}${truncated ? '+ (file truncated at 256KB)' : ''}]`
       return {
         output: window + footer,
@@ -92,7 +92,7 @@ export const readFileTool: Tool = {
 
     return {
       output: truncated
-        ? `${text}\n\n[truncated at ${MAX_READ_BYTES} bytes — use offset/limit to read further]`
+        ? `${text}\n\n[truncated at ${MAX_READ_BYTES} bytes - use offset/limit to read further]`
         : text,
       meta: { path: displayPath(ctx.workspaceRoot, abs), bytes: info.size }
     }
@@ -174,7 +174,7 @@ export const editFileTool: Tool = {
     } catch {
       return {
         output:
-          `File not found: ${str(args, 'path')}. edit_file only works on existing files — ` +
+          `File not found: ${str(args, 'path')}. edit_file only works on existing files - ` +
           'use write_file to create one, or check the path with list_dir or glob.',
         isError: true
       }
@@ -194,7 +194,7 @@ export const editFileTool: Tool = {
         isError: true
       }
     }
-    // () => newStr keeps the replacement literal — a plain string would have
+    // () => newStr keeps the replacement literal - a plain string would have
     // its $-patterns ($&, $1, $') interpreted and corrupt the file.
     const updated = replaceAll
       ? original.split(oldStr).join(newStr)
@@ -260,7 +260,7 @@ export const listDirTool: Tool = {
     const skipped = entries.length - visible.length
     const extra =
       visible.length > LIST_DIR_LIMIT
-        ? `\n\n[${visible.length - LIST_DIR_LIMIT} more not shown — use glob for a narrower pattern]`
+        ? `\n\n[${visible.length - LIST_DIR_LIMIT} more not shown - use glob for a narrower pattern]`
         : skipped > 0
           ? `\n\n[${skipped} hidden/build entries omitted]`
           : ''

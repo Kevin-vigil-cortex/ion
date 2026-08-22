@@ -122,11 +122,11 @@ export class AgentSession {
   private controller: AbortController | null = null
   /** User messages injected mid-turn (Cmd+Enter steer). Flushed at the next iteration. */
   private pendingSteers: TextMessage[] = []
-  /** Paths read or edited this send() — used to apply glob-gated rules. */
+  /** Paths read or edited this send() - used to apply glob-gated rules. */
   private readonly turnTouched = new Set<string>()
   /** Pre-edit snapshots for write_file / edit_file this send(). */
   private readonly turnSnapshots = new Map<string, FileSnapshot>()
-  /** Auto-injected get_diagnostics rounds this send() — capped so a red tsc can't loop forever. */
+  /** Auto-injected get_diagnostics rounds this send() - capped so a red tsc can't loop forever. */
   private autoDiagRounds = 0
 
   constructor(opts: AgentSessionOptions) {
@@ -173,7 +173,7 @@ export class AgentSession {
 
   /**
    * Queue a user message for the next tool-loop iteration. Lands after the
-   * current model call / tool batch — not a new turn. No-op text is ignored.
+   * current model call / tool batch - not a new turn. No-op text is ignored.
    */
   async steer(userText: string, attachments?: MessageAttachment[]): Promise<void> {
     const prepared = attachments?.length ? await this.prepareAttachments(attachments) : undefined
@@ -189,7 +189,7 @@ export class AgentSession {
 
   /**
    * Restore files from a turn checkpoint. `path` restores one file; omit for all.
-   * Safe to call while idle — mid-turn restore is allowed but unusual.
+   * Safe to call while idle - mid-turn restore is allowed but unusual.
    */
   async restoreCheckpoint(checkpointId: string, path?: string): Promise<string[]> {
     const item = this.session.items.find(
@@ -240,7 +240,7 @@ export class AgentSession {
 
   /**
    * Load image bytes from disk and upload documents that don't have a file id
-   * yet. Failures are non-fatal — the attachment still sits on the message.
+   * yet. Failures are non-fatal - the attachment still sits on the message.
    */
   private async prepareAttachments(atts: MessageAttachment[]): Promise<MessageAttachment[]> {
     const out: MessageAttachment[] = []
@@ -250,7 +250,7 @@ export class AgentSession {
         try {
           next.base64 = (await readFile(next.path)).toString('base64')
         } catch {
-          // Missing file — model just won't see this image.
+          // Missing file - model just won't see this image.
         }
       }
       if (
@@ -625,7 +625,7 @@ export class AgentSession {
     if (!this.session.workspaceRoot && tool.requiresWorkspace !== false) {
       return {
         output:
-          'No workspace folder is open. Use find_path to locate the project folder, then open_workspace — file, search, and terminal tools unlock on the next tool round.',
+          'No workspace folder is open. Use find_path to locate the project folder, then open_workspace - file, search, and terminal tools unlock on the next tool round.',
         isError: true
       }
     }
@@ -800,7 +800,7 @@ function clipToolOutput(output: string): string {
   if (output.length <= MAX_TRANSCRIPT_OUTPUT) return output
   return (
     output.slice(0, MAX_TRANSCRIPT_OUTPUT) +
-    `\n\n[truncated for context — ${output.length} chars originally. Re-read with offset/limit or pipe the command to tail if you need the rest.]`
+    `\n\n[truncated for context - ${output.length} chars originally. Re-read with offset/limit or pipe the command to tail if you need the rest.]`
   )
 }
 

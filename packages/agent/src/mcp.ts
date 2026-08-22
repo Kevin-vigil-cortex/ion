@@ -9,8 +9,8 @@ export interface LoadMcpOptions {
   userFiles?: string[]
   /**
    * Honor the project's own mcp.json (arbitrary commands checked into the
-   * repo). Default false: project servers are listed as blocked — never
-   * started, never allowed to override a user server — until the host marks
+   * repo). Default false: project servers are listed as blocked - never
+   * started, never allowed to override a user server - until the host marks
    * the workspace trusted.
    */
   trustProject?: boolean
@@ -42,7 +42,7 @@ export function defaultUserMcpFiles(): string[] {
 }
 
 /**
- * Discover + merge mcp.json. Later files override the same server name —
+ * Discover + merge mcp.json. Later files override the same server name -
  * project `.cursor/mcp.json` wins over user Ion/Cursor configs.
  */
 export async function loadMcpConfig(

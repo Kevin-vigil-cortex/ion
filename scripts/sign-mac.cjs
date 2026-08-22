@@ -12,7 +12,7 @@
  * Identity resolution order:
  *   1. $ION_CODESIGN_IDENTITY (explicit override)
  *   2. "Ion Dev" self-signed cert, if present in the keychain
- *   3. ad-hoc ("-") — works everywhere, permissions reset each rebuild
+ *   3. ad-hoc ("-") - works everywhere, permissions reset each rebuild
  */
 const { execFileSync } = require('node:child_process')
 
@@ -39,6 +39,6 @@ const identity =
 execFileSync('codesign', ['--force', '--deep', '--sign', identity, app], { stdio: 'inherit' })
 console.log(
   identity === '-'
-    ? `signed ${app} ad-hoc (no stable identity found — TCC grants reset on rebuild)`
+    ? `signed ${app} ad-hoc (no stable identity found - TCC grants reset on rebuild)`
     : `signed ${app} with "${identity}" (TCC grants persist across rebuilds)`
 )

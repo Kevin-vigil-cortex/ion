@@ -3,9 +3,9 @@ import type { Tool } from './types'
 /**
  * Browser-use tools. The agent core stays Electron-free: the desktop app
  * implements {@link BrowserController} over an embedded webview and injects
- * it via {@link createBrowserTools}. All tools are non-dangerous — they are
+ * it via {@link createBrowserTools}. All tools are non-dangerous - they are
  * sandboxed to the embedded browser panel, never the user's own browser or
- * OS — and work without a workspace folder.
+ * OS - and work without a workspace folder.
  */
 
 /** A screenshot of the embedded browser viewport. */
@@ -122,7 +122,7 @@ export function createBrowserTools(controller: BrowserController): Tool[] {
   const type: Tool = {
     name: 'browser_type',
     description:
-      'Type text into the embedded browser. Pass a ref from the latest snapshot to focus that field first (recommended); without a ref, types into the currently focused element. Does not press Enter — use browser_press_key for that.',
+      'Type text into the embedded browser. Pass a ref from the latest snapshot to focus that field first (recommended); without a ref, types into the currently focused element. Does not press Enter - use browser_press_key for that.',
     dangerous: false,
     requiresWorkspace: false,
     parameters: {
@@ -195,7 +195,7 @@ export function createBrowserTools(controller: BrowserController): Tool[] {
   const screenshot: Tool = {
     name: 'browser_screenshot',
     description:
-      'Capture a screenshot of the embedded browser viewport. The image is attached so you can see the rendered page — use it after significant UI changes or when a snapshot is ambiguous (canvas, images, complex layout).',
+      'Capture a screenshot of the embedded browser viewport. The image is attached so you can see the rendered page - use it after significant UI changes or when a snapshot is ambiguous (canvas, images, complex layout).',
     dangerous: false,
     requiresWorkspace: false,
     parameters: { type: 'object', properties: {}, additionalProperties: false },

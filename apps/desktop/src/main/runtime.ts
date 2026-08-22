@@ -55,7 +55,7 @@ import { MacComputerDriver } from './computer'
 /**
  * Codex-style permission modes mapped onto the loop's per-tool auto-approve
  * hook. In 'auto', workspace-confined edits skip the prompt but the unbounded
- * surfaces — arbitrary shell, OS control — and save_memory (persistent
+ * surfaces - arbitrary shell, OS control - and save_memory (persistent
  * prompt-injection vector) still ask.
  */
 function approvalPredicate(mode: ApprovalMode): (tool: Tool) => boolean {
@@ -65,7 +65,7 @@ function approvalPredicate(mode: ApprovalMode): (tool: Tool) => boolean {
     tool.name !== 'run_terminal' &&
     tool.name !== 'git_commit' &&
     tool.name !== 'save_memory' &&
-    // Ships the workspace diff to CodeRabbit's service — always ask first.
+    // Ships the workspace diff to CodeRabbit's service - always ask first.
     tool.name !== 'code_review' &&
     !tool.name.startsWith('computer_') &&
     !tool.name.startsWith('mcp_')
@@ -514,7 +514,7 @@ export class AgentRuntime {
    * (e.g. after locating it with find_path). Approval-gated because it grants
    * the file/terminal tools access to that folder. It mutates the SAME
    * session object the live AgentSession holds, so the loop's next iteration
-   * offers the workspace tools immediately — no new message needed.
+   * offers the workspace tools immediately - no new message needed.
    */
   private createOpenWorkspaceTool(sessionId: string, session: Session): Tool {
     return {

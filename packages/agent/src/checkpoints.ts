@@ -52,7 +52,7 @@ export function buildCheckpointFile(
       skipped: true,
       additions: 0,
       deletions: 0,
-      diff: `[${path} — too large or binary to snapshot]`,
+      diff: `[${path} - too large or binary to snapshot]`,
       before: null,
       after: null
     }

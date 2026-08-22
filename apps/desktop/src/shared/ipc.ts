@@ -24,7 +24,7 @@ export type ApprovalMode = 'ask' | 'auto' | 'full'
 /**
  * Per-chat working mode:
  * - agent: full tool set, makes changes (subject to ApprovalMode).
- * - plan:  read-only — explores the code and delivers an implementation plan.
+ * - plan:  read-only - explores the code and delivers an implementation plan.
  */
 export type SessionMode = 'agent' | 'plan'
 
@@ -36,7 +36,7 @@ export interface SafeConfig {
   defaultEffort: string
   hasApiKey: boolean
   approvalMode: ApprovalMode
-  /** When false, the model sees only the current turn — no prior chat history. */
+  /** When false, the model sees only the current turn - no prior chat history. */
   memoryEnabled: boolean
   /** Self-learning: inject learned memories into the prompt and offer save_memory. */
   learningEnabled: boolean

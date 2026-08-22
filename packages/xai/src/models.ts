@@ -10,7 +10,7 @@ export const REASONING_EFFORTS: ReasoningEffort[] = ['low', 'medium', 'high', 'x
 
 /**
  * Efforts each offered family truly supports (docs.x.ai/reasoning): xhigh is
- * grok-4.6+ only — grok-4.5 silently coerces it to high, so we don't offer it
+ * grok-4.6+ only - grok-4.5 silently coerces it to high, so we don't offer it
  * there. The API-side default is high for both.
  */
 export const FAMILY_EFFORTS: Record<string, ReasoningEffort[]> = {
@@ -69,7 +69,7 @@ export interface ModelMetadata {
  * Per-model context windows and USD-per-million-token pricing, from
  * docs.x.ai/developers/models and /developers/pricing (checked Aug 2026).
  * xAI bills long-context requests (prompt >= 200k tokens) at a higher rate
- * for ALL tokens in the request — captured as `longContext`.
+ * for ALL tokens in the request - captured as `longContext`.
  *
  * | model        | ctx  | in    | cached | out   | >=200k in/out |
  * | grok-4.6     | 500k | $2.00 | $0.50  | $6.00 | $4.00/$12.00  |

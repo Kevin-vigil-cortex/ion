@@ -12,7 +12,7 @@ interface Credentials {
 }
 ```
 
-## Option 1 — xAI API key (pay-per-token)
+## Option 1 - xAI API key (pay-per-token)
 
 1. Create a key at [console.x.ai](https://console.x.ai).
 2. In the app: **Customize -> Settings -> API key**, paste it, and **Save**.
@@ -22,10 +22,10 @@ interface Credentials {
 
 Billing is per-token on your xAI account.
 
-## Option 2 — SuperGrok OAuth (subscription)
+## Option 2 - SuperGrok OAuth (subscription)
 
 Uses your existing **SuperGrok** or **X Premium+** subscription via a browser-based
-OAuth 2.0 **device-code** flow — no API key required.
+OAuth 2.0 **device-code** flow - no API key required.
 
 ### Flow
 

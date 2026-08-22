@@ -23,7 +23,7 @@ export function summarizeEdit(before: string | null, after: string, path: string
       diff:
         `--- a/${path}\n+++ b/${path}\n` +
         `@@ file replaced (${oldLines.length} → ${newLines.length} lines) @@\n` +
-        `[diff omitted — file too large to preview]`
+        `[diff omitted - file too large to preview]`
     }
   }
 

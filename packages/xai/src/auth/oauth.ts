@@ -141,13 +141,13 @@ export class OAuthCredentials implements Credentials {
       this.onTierGated?.()
       const text = await res.text().catch(() => '')
       throw new XaiError(
-        'xAI denied OAuth access for this account (403). Your subscription tier may not be on the API allowlist — use an API key instead.',
+        'xAI denied OAuth access for this account (403). Your subscription tier may not be on the API allowlist - use an API key instead.',
         403,
         text
       )
     }
     if (res.status === 400 || res.status === 401) {
-      // Refresh token is invalid/expired — force a fresh sign-in.
+      // Refresh token is invalid/expired - force a fresh sign-in.
       await this.store.clear()
       this.tokens = null
       this.loaded = true

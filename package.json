@@ -1,8 +1,8 @@
 {
   "name": "ion",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
-  "description": "Open-source agent harness for xAI Grok — Cursor-style desktop app supporting API key or SuperGrok OAuth",
+  "description": "Open-source agent harness for xAI Grok - Cursor-style desktop app supporting API key or SuperGrok OAuth",
   "license": "MIT",
   "workspaces": [
     "apps/*",

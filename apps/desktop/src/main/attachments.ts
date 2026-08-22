@@ -20,7 +20,7 @@ export interface IncomingAttachment {
   path?: string
   data?: ArrayBuffer
   silent?: boolean
-  /** Renderer already sampled frames — don't run ffmpeg. */
+  /** Renderer already sampled frames - don't run ffmpeg. */
   skipFrames?: boolean
 }
 

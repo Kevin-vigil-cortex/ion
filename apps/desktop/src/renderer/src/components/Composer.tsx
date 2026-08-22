@@ -14,7 +14,7 @@ function mentionAtCaret(text: string, caret: number): { start: number; query: st
   return { start: before.length - (m[2]?.length ?? 0) - 1, query: m[2] ?? '' }
 }
 
-/** `/skill` immediately before the caret. Cmd+/ is model-cycle — this is a bare slash. */
+/** `/skill` immediately before the caret. Cmd+/ is model-cycle - this is a bare slash. */
 function slashAtCaret(text: string, caret: number): { start: number; query: string } | null {
   const before = text.slice(0, caret)
   const m = before.match(/(^|[\s])\/([^\s/]*)$/)
@@ -429,7 +429,7 @@ export default function Composer({ variant }: { variant: 'center' | 'bottom' }):
             busy
               ? 'Enter queues · ⌘Enter steers now'
               : draftMode === 'plan'
-                ? 'Describe what to plan — nothing gets changed'
+                ? 'Describe what to plan - nothing gets changed'
                 : draftWorkspace
                   ? 'Plan, search, build anything · @ file · / skill'
                   : 'Plan, search, build anything · / skill'
@@ -440,7 +440,7 @@ export default function Composer({ variant }: { variant: 'center' | 'bottom' }):
           <div className="absolute bottom-full left-3 z-30 mb-1 max-h-56 min-w-[280px] max-w-[400px] overflow-auto rounded-lg border border-line bg-card py-1 shadow-lg">
             {skillHits.length === 0 ? (
               <div className="px-3 py-2 text-xs text-ink-faint">
-                {slash.query ? `No skills matching “${slash.query}”` : 'No skills yet — add SKILL.md under .cursor/skills or ~/.ion/skills'}
+                {slash.query ? `No skills matching “${slash.query}”` : 'No skills yet - add SKILL.md under .cursor/skills or ~/.ion/skills'}
               </div>
             ) : (
               skillHits.map((skill, i) => (
@@ -498,9 +498,9 @@ export default function Composer({ variant }: { variant: 'center' | 'bottom' }):
                   )}
                   <span className="min-w-0 truncate">
                     {hit.kind === 'diff'
-                      ? '@diff — working tree'
+                      ? '@diff - working tree'
                       : hit.kind === 'staged'
-                        ? '@staged — index'
+                        ? '@staged - index'
                         : hit.path}
                   </span>
                 </button>
@@ -554,7 +554,7 @@ export default function Composer({ variant }: { variant: 'center' | 'bottom' }):
           {config?.memoryEnabled === false && (
             <button
               onClick={() => void setMemoryEnabled(true)}
-              title="Chat memory is off — the model won't see earlier messages. Click to turn it back on."
+              title="Chat memory is off - the model won't see earlier messages. Click to turn it back on."
               className="flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md bg-accent-soft px-2 py-1 text-xs text-accent hover:opacity-80"
             >
               <BrainCircuit size={13} />

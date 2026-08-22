@@ -56,7 +56,7 @@ async function run(
 function clip(text: string): string {
   const t = text.trimEnd()
   if (t.length <= MAX_OUTPUT) return t
-  return t.slice(0, MAX_OUTPUT) + `\n\n[truncated — ${t.length} chars]`
+  return t.slice(0, MAX_OUTPUT) + `\n\n[truncated - ${t.length} chars]`
 }
 
 /**
@@ -128,8 +128,8 @@ export async function collectDiagnostics(
 export const getDiagnosticsTool: Tool = {
   name: 'get_diagnostics',
   description:
-    'Run the workspace typechecker / linter (tsc, eslint, ruff — whichever is installed locally) ' +
-    'and return the errors. After edits, call this (or wait — Ion also auto-runs it) and fix what it reports.',
+    'Run the workspace typechecker / linter (tsc, eslint, ruff - whichever is installed locally) ' +
+    'and return the errors. After edits, call this (or wait - Ion also auto-runs it) and fix what it reports.',
   dangerous: false,
   parameters: {
     type: 'object',

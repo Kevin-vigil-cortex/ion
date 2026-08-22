@@ -65,7 +65,7 @@ export interface UiMessage {
   reasoning?: string
   /** Set when reasoning starts streaming (drives the live "Thinking" line). */
   reasoningStartedAt?: number
-  /** Total thinking time, set when reasoning ends — enables the collapsed "Thought for Xs" row. */
+  /** Total thinking time, set when reasoning ends - enables the collapsed "Thought for Xs" row. */
   reasoningMs?: number
 }
 
@@ -770,7 +770,7 @@ export const useStore = create<AppState>((set, get) => {
           return it
         })
     }))
-    // Stopped this turn — fire the next queued steer if there is one.
+    // Stopped this turn - fire the next queued steer if there is one.
     void get().flushQueue()
   },
 

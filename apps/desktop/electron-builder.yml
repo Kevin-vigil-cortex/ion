@@ -20,7 +20,7 @@ mac:
   category: public.app-category.developer-tools
   darkModeSupport: true
   # electron-builder's own signing is skipped; scripts/eb-after-pack.cjs signs
-  # the packed bundle instead — with the "Ion Dev" self-signed cert when
+  # the packed bundle instead - with the "Ion Dev" self-signed cert when
   # present (so macOS TCC permission grants persist across rebuilds and
   # Squirrel.Mac accepts updates) or ad-hoc for local dir builds.
   # (The Apple Development cert is unusable: no provisioning profile.)
@@ -44,6 +44,6 @@ afterPack: scripts/eb-after-pack.cjs
 # releaseType: release = users get it immediately (no draft step).
 publish:
   provider: github
-  owner: deadshot4444-blip
+  owner: Kevin-vigil-cortex
   repo: ion
   releaseType: release

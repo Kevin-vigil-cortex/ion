@@ -10,5 +10,5 @@ release/
 .env.*
 .playwright-cli/
 
-# Local Ion data (chats, tokens, memories). Lives in ~/.ion — never commit it.
+# Local Ion data (chats, tokens, memories). Lives in ~/.ion - never commit it.
 .ion/

@@ -4,18 +4,25 @@
 wrapped in a Cursor-style desktop app. It runs entirely on your machine and supports two ways
 to authenticate:
 
-- **xAI API key** — pay-per-token billing (`console.x.ai`).
-- **SuperGrok OAuth** — sign in with your SuperGrok / X Premium+ subscription; no
+- **xAI API key** - pay-per-token billing (`console.x.ai`).
+- **SuperGrok OAuth** - sign in with your SuperGrok / X Premium+ subscription; no
   API key required. Tokens live only on your machine and refresh automatically.
 
 The agent core, the provider/auth layer, and the optional local proxy are cleanly
 separated so you can reuse or replace any piece.
 
 > Status: early but functional. Runs from source (`npm run dev`), packages
-> locally (`npm run package`), and ships auto-updating builds from
-> [GitHub Releases](https://github.com/deadshot4444-blip/ion/releases)
-> (`npm run release`). Not Apple-notarized yet — first launch on someone
-> else's Mac needs right-click → Open.
+> locally (`npm run package`), and ships auto-updating builds from the canonical
+> [GitHub Releases](https://github.com/Kevin-vigil-cortex/ion/releases) page
+> (`npm run release`). The current download supports Apple Silicon macOS and is
+> not Apple-notarized yet. On first launch, right-click Ion and choose Open.
+
+## Download
+
+Download the latest Ion build from
+[GitHub Releases](https://github.com/Kevin-vigil-cortex/ion/releases/latest).
+Prebuilt downloads currently support Apple Silicon macOS (`arm64`). Windows,
+Linux, and Intel macOS users can run Ion from source.
 
 ## Features
 
@@ -24,7 +31,7 @@ separated so you can reuse or replace any piece.
   `glob`, `grep`, `run_terminal`. File writes and terminal commands are gated
   behind in-chat approval (with a per-session "always allow").
 - **Checkpoints + change review**: every turn that edits files gets a
-  multi-file diff card — restore per file or the whole turn, open hunks in
+  multi-file diff card - restore per file or the whole turn, open hunks in
   Cursor / VS Code, or Commit with a suggested message. Chat code blocks
   have Copy + Apply. `@diff` / `@staged` attach the real git working tree.
 - **Ignore + diagnostics**: `.cursorignore` / `.gitignore` / default denylist
@@ -38,21 +45,21 @@ separated so you can reuse or replace any piece.
   like the terminal unless `autoApprove` is set. See [docs/mcp.md](docs/mcp.md).
 - Streaming responses over xAI's **Responses API** with function calling.
 - Persisted, resumable **chats** stored as JSON under `~/.ion/sessions` on
-  *your* machine — not in this repo, not uploaded anywhere.
+  *your* machine - not in this repo, not uploaded anywhere.
 - Toggleable chat memory: turn "Chat memory (context)" off in Settings and the model
-  sees only your latest message — the visible transcript is kept either way.
-- **Self-learning memories**: a closed learning loop — the agent saves durable
+  sees only your latest message - the visible transcript is kept either way.
+- **Self-learning memories**: a closed learning loop - the agent saves durable
   learnings (preferences, project facts, gotchas) via a `save_memory` tool to
   `~/.ion/memory/`, and they're injected into the system prompt of every
   future session. Inspect/edit them in sidebar > Memories; toggle in Settings.
   See [docs/memory.md](docs/memory.md).
 - **Browser use**: the agent drives an embedded, sandboxed browser panel inside
-  the app — navigate, snapshot the page, click, type, scroll, screenshot — with a
+  the app - navigate, snapshot the page, click, type, scroll, screenshot - with a
   visible animated cursor overlay so you can watch it work. Screenshots are sent
   to Grok as real image input (grok-4 is vision-capable). Toggle in Settings
   (on by default). See [docs/computer-use.md](docs/computer-use.md).
-- **Computer use (macOS)**: opt-in OS-level control — screen screenshots, smooth
-  visible mouse movement with a click highlight, keyboard input — every action
+- **Computer use (macOS)**: opt-in OS-level control - screen screenshots, smooth
+  visible mouse movement with a click highlight, keyboard input - every action
   approval-gated. Off by default; needs Screen Recording + Accessibility
   permissions. See [docs/computer-use.md](docs/computer-use.md).
 - **Tuned for Grok**: offers the two reasoning flagships (Grok 4.6 and 4.5)
@@ -62,13 +69,13 @@ separated so you can reuse or replace any piece.
   `Retry-After`, a 200k-token context budget with oldest-first trimming, and
   an agentic system prompt built for Grok 4.x.
 - Built-in **Kanban board** (sidebar > Board): columns and cards with drag-and-drop,
-  inline add/rename/delete, and card notes — persisted to `~/.ion/board.json`.
+  inline add/rename/delete, and card notes - persisted to `~/.ion/board.json`.
 - Workspace **file explorer** beside the chat: browse the open folder and create,
-  rename, move (drag-and-drop), or delete files and folders — deletes go to the
+  rename, move (drag-and-drop), or delete files and folders - deletes go to the
   system Trash.
 - **Context Usage panel** (ring button next to Send): see how full the model's
   context window is with a segmented breakdown (system prompt / tool definitions /
-  learned memory / conversation), plus real token usage from the API — and, on an
+  learned memory / conversation), plus real token usage from the API - and, on an
   API key, estimated session + lifetime spend at current xAI per-token rates.
 - Optional local **OpenAI-compatible proxy** so any OpenAI-style client can borrow
   your credentials (`/v1/responses`, `/v1/chat/completions`, `/v1/models`).
@@ -76,13 +83,16 @@ separated so you can reuse or replace any piece.
 
 ## Requirements
 
+- Prebuilt app: Apple Silicon macOS (`arm64`)
+- Development from source: macOS, Windows, or Linux
 - Node.js 22+ and npm 10+
-- macOS, Windows, or Linux (developed on macOS)
 
 ## Quick start
 
 ```bash
-npm install
+git clone https://github.com/Kevin-vigil-cortex/ion.git
+cd ion
+npm ci
 npm run dev        # launches the Electron app in dev mode
 ```
 
@@ -117,7 +127,7 @@ curl http://127.0.0.1:8787/v1/models
 ```
 
 The proxy injects your credentials, so it only answers requests addressed to
-localhost and refuses anything sent by a browser (`Origin` header) — but any
+localhost and refuses anything sent by a browser (`Origin` header) - but any
 local process can still use it while it's on. Details, examples, and the full
 security model: [docs/proxy.md](docs/proxy.md).
 
@@ -156,16 +166,24 @@ npm run release     # zip + dmg, signed, uploaded to GitHub Releases
 ```
 
 `package` is for your machine. `release` is how other people get Ion and how
-installed copies update: bump `version` in `apps/desktop/package.json`, then
+installed copies update. Keep the version synchronized in the root package,
+the desktop app, the three workspace packages, and `package-lock.json`. Validate
+the release, commit the version bump, and confirm the commit is on `main` before
+publishing:
 
 ```bash
+npm ci
+npm run typecheck
+npm run smoke
+npm run build
+git status
 GH_TOKEN=$(gh auth token) npm run release
 ```
 
 That tags `v$version` (if needed) and publishes a GitHub Release. People
 download the `.dmg`. After that, Ion checks for newer releases on launch
 (and every few hours) and offers Restart when one is ready. The running
-app and the update must be signed with the same **Ion Dev** identity —
+app and the update must be signed with the same **Ion Dev** identity -
 `release` refuses to ship without it.
 
 First launch on another Mac: right-click → Open (self-signed, not notarized).
@@ -176,8 +194,8 @@ First launch on another Mac: right-click → Open (self-signed, not notarized).
   identifier, not a secret.
 - API keys and OAuth tokens are written only under `~/.ion/` with `0600`
   permissions and never sent to the renderer.
-- File tools are confined to the workspace folder you choose — checked both
-  lexically and through symlinks — and every dangerous tool (writes, terminal,
+- File tools are confined to the workspace folder you choose - checked both
+  lexically and through symlinks - and every dangerous tool (writes, terminal,
   memory saves, computer use) is approval-gated.
 
 More: [docs/security.md](docs/security.md) · report privately via
@@ -185,4 +203,4 @@ More: [docs/security.md](docs/security.md) · report privately via
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).

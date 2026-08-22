@@ -22,7 +22,7 @@ const MAX_SNAPSHOT_TEXT = 4_000
  * clicks/keys via trusted sendInputEvent, screenshots via capturePage.
  *
  * Every pointer action first streams a cursor event to the renderer so the
- * fake-cursor overlay glides to the target before the real input fires —
+ * fake-cursor overlay glides to the target before the real input fires -
  * that is what makes the agent's browsing watchable.
  */
 export class BrowserBridge implements BrowserController {
@@ -92,7 +92,7 @@ export class BrowserBridge implements BrowserController {
     })
     if (!wc || wc.isDestroyed()) {
       throw new Error(
-        'The embedded browser panel is not available. It lives in the chat view — this usually resolves once a chat is open. Retry the browser tool.'
+        'The embedded browser panel is not available. It lives in the chat view - this usually resolves once a chat is open. Retry the browser tool.'
       )
     }
     return wc
@@ -207,7 +207,7 @@ export class BrowserBridge implements BrowserController {
     const pos = (await wc.executeJavaScript(
       '(function () { return { y: Math.round(window.scrollY), max: Math.max(0, Math.round(document.documentElement.scrollHeight - window.innerHeight)) } })()'
     )) as { y: number; max: number }
-    return `Scrolled by ${dy}px — now at ${pos.y}/${pos.max}px.`
+    return `Scrolled by ${dy}px - now at ${pos.y}/${pos.max}px.`
   }
 
   async screenshot(): Promise<BrowserScreenshot> {
@@ -325,7 +325,7 @@ function resolveRefScript(ref: string, scrollIntoView: boolean): string {
     var refs = window.__ghRefs;
     var el = refs && refs[${index >= 0 ? index : -1}];
     if (!el || !el.getBoundingClientRect) {
-      return { error: 'Unknown ref ${escapeForScript(ref)} — take a new browser_snapshot first (refs reset on navigation).' };
+      return { error: 'Unknown ref ${escapeForScript(ref)} - take a new browser_snapshot first (refs reset on navigation).' };
     }
     ${scrollIntoView ? "try { el.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}" : ''}
     var r = el.getBoundingClientRect();

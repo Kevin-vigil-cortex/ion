@@ -44,7 +44,7 @@ export function startProxyServer(options: ProxyServerOptions): Promise<ProxyServ
     // The proxy injects the user's credentials, so only same-machine,
     // non-browser clients may talk to it: a browser page reaching it via
     // DNS rebinding keeps its forged hostname in Host and always sends
-    // Origin — reject both. Legit local CLI/SDK clients send neither.
+    // Origin - reject both. Legit local CLI/SDK clients send neither.
     if (!isLocalHostHeader(req.headers.host)) {
       return sendJson(res, 403, {
         error: { message: 'Forbidden: proxy only accepts requests addressed to localhost.' }
