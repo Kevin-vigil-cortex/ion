@@ -1,6 +1,6 @@
 /**
  * Verifies the xAI client translates domain items to a Responses request and
- * parses a streamed SSE response into ModelEvents — using a fake fetch, so no
+ * parses a streamed SSE response into ModelEvents - using a fake fetch, so no
  * network or key is needed.
  */
 import {
@@ -143,7 +143,7 @@ async function main(): Promise<void> {
   // Grok request tuning: deterministic default temperature, parallel tool
   // calls advertised, reasoning effort only for models that support it.
   assert(cap.body.temperature === 0.2, `default temperature 0.2, got ${cap.body.temperature}`)
-  assert(cap.body.store === false, 'store:false — no server-side transcript')
+  assert(cap.body.store === false, 'store:false - no server-side transcript')
   assert(!cap.body.include, 'do not request encrypted reasoning (replay 400s as compaction blobs)')
   assert(cap.body.max_tool_calls === 8, 'max_tool_calls caps a single response')
   assert(cap.body.parallel_tool_calls === true, 'parallel_tool_calls passed through')

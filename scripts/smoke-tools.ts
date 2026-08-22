@@ -1,5 +1,5 @@
 /**
- * Smoke test for the browser-use / computer-use tool plumbing — no Electron,
+ * Smoke test for the browser-use / computer-use tool plumbing - no Electron,
  * no network. Exercises: factory registration, workspace-less availability,
  * approval gating (browser tools free, computer tools gated), screenshot
  * images flowing to the next model call, persist-stripping of base64,
@@ -138,7 +138,7 @@ function registrationCheck(): void {
 function codeReviewCheck(): void {
   const tool = defaultTools.find((t) => t.name === 'code_review')
   assert(tool, 'code_review is in defaultTools')
-  // Read-only locally, but it uploads the diff to CodeRabbit — approval-gated.
+  // Read-only locally, but it uploads the diff to CodeRabbit - approval-gated.
   assert(tool!.dangerous === true, 'code_review requires approval')
   assert(
     JSON.stringify(codeReviewArgs()) ===
@@ -369,7 +369,7 @@ async function tokenBudgetCheck(): Promise<void> {
   const store = new SessionStore(join(dir, 'sessions'))
   const session = await store.create({ workspaceRoot: null, model: 'mock' })
 
-  // ~150k tokens per item (600k chars / 4) — three of these blow the 200k budget.
+  // ~150k tokens per item (600k chars / 4) - three of these blow the 200k budget.
   const huge = 'x'.repeat(600_000)
   for (let i = 0; i < 3; i++) {
     session.items.push({ kind: 'message', role: 'user', content: `[old ${i}] ${huge}` })

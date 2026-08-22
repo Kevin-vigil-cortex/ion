@@ -1,5 +1,5 @@
 /**
- * End-to-end smoke test of the agent harness using a mock model — no network.
+ * End-to-end smoke test of the agent harness using a mock model - no network.
  * Exercises: streaming text, a read tool round-trip, a dangerous-tool approval
  * gate (deny), session persistence, and the event stream.
  */
@@ -178,7 +178,7 @@ async function learningLoopCheck(): Promise<void> {
     }
   }
 
-  /** Turn 1: saves a global learning, then tries a workspace save (must fail — no workspace). */
+  /** Turn 1: saves a global learning, then tries a workspace save (must fail - no workspace). */
   class SavingModel implements LanguageModel {
     readonly id = 'mock'
     calls = 0
@@ -210,7 +210,7 @@ async function learningLoopCheck(): Promise<void> {
     }
   }
 
-  // (a) Save through the tool — with NO workspace open. save_memory is
+  // (a) Save through the tool - with NO workspace open. save_memory is
   // approval-gated (persistent prompt-injection surface), so approve it here.
   const events: AgentEvent[] = []
   const approvalsRequested: string[] = []
@@ -762,7 +762,7 @@ async function mcpCheck(): Promise<void> {
     'utf8'
   )
 
-  // Untrusted (the default): the repo's own servers are blocked — listed but
+  // Untrusted (the default): the repo's own servers are blocked - listed but
   // never started, and never allowed to hijack a user server's name.
   const untrusted = await loadMcpConfig(ws, { userFiles: [userFile] })
   const uEcho = untrusted.find((s) => s.name === 'echo')
@@ -1104,9 +1104,9 @@ async function main(): Promise<void> {
 }
 
 /**
- * Plan mode: mutating tools (dangerous) are not offered — except
+ * Plan mode: mutating tools (dangerous) are not offered - except
  * open_workspace (open a project to read) and code_review (reads the diff,
- * mutates nothing) — and the system prompt carries the read-only planning
+ * mutates nothing) - and the system prompt carries the read-only planning
  * instructions.
  */
 async function planModeCheck(): Promise<void> {
@@ -1399,7 +1399,7 @@ async function projectInstructionsCheck(): Promise<void> {
 
 /**
  * steer() injects a user message into the current turn so the next model
- * call sees it — not a queued new send().
+ * call sees it - not a queued new send().
  */
 async function steerCheck(): Promise<void> {
   const dir = await mkdtemp(join(tmpdir(), 'ion-smoke-steer-'))

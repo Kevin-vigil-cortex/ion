@@ -5,7 +5,7 @@
  * stable signature the installed app has (see scripts/sign-mac.cjs).
  *
  * Squirrel.Mac refuses updates whose signature doesn't satisfy the running
- * app's designated requirement, and ad-hoc signatures change every build —
+ * app's designated requirement, and ad-hoc signatures change every build -
  * so distributable builds hard-fail when the stable identity is missing
  * instead of silently shipping a non-updatable artifact.
  */
