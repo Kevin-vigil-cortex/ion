@@ -10,11 +10,11 @@ const CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000
 /**
  * Auto-updates from GitHub Releases via electron-updater. The feed URL comes
  * from app-update.yml, which electron-builder bakes into Resources when
- * packaging with the `publish` config (the `release` script) — plain
+ * packaging with the `publish` config (the `release` script) - plain
  * `npm run package` dir builds have no feed and stay `unsupported`.
  *
  * Updates download in the background; installing waits until the user clicks
- * "Restart to update" (or quits — autoInstallOnAppQuit). Squirrel.Mac only
+ * "Restart to update" (or quits - autoInstallOnAppQuit). Squirrel.Mac only
  * accepts an update whose code signature matches the running app's, which is
  * why release builds must be signed with the stable "Ion Dev" identity
  * (scripts/eb-after-pack.cjs enforces this), never ad-hoc.

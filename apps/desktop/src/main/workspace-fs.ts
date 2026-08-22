@@ -133,7 +133,7 @@ export async function openInEditor(
     } catch (err) {
       const code = (err as { code?: string }).code
       if (code === 'ENOENT') continue
-      // Launched but exited non-zero — still treat as opened.
+      // Launched but exited non-zero - still treat as opened.
       return
     }
   }
@@ -252,7 +252,7 @@ export async function expandWorkspaceMentions(
     try {
       const abs = resolveInWorkspace(workspaceRoot, m.path)
       if (ignore.blocksRead(m.path) || ignore.ignores(m.path)) {
-        chunks.push(`### \`${m.path}\`\n\n(ignored — not attached)`)
+        chunks.push(`### \`${m.path}\`\n\n(ignored - not attached)`)
         continue
       }
       if (m.isDir) {
@@ -278,7 +278,7 @@ export async function expandWorkspaceMentions(
       } else {
         const buf = await fs.readFile(abs)
         if (buf.includes(0)) {
-          chunks.push(`### File \`${m.path}\`\n\n(binary — not attached)`)
+          chunks.push(`### File \`${m.path}\`\n\n(binary - not attached)`)
           continue
         }
         const raw = buf.toString('utf8')

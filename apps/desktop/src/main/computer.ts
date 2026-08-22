@@ -42,7 +42,7 @@ export class MacComputerDriver implements ComputerController {
       systemPreferences.isTrustedAccessibilityClient(true)
       throw new Error(
         'macOS Accessibility permission is missing, so mouse/keyboard control is blocked. ' +
-          'Grant it in System Settings > Privacy & Security > Accessibility (add/enable Ion — or Electron when running from source), then retry.'
+          'Grant it in System Settings > Privacy & Security > Accessibility (add/enable Ion - or Electron when running from source), then retry.'
       )
     }
   }
@@ -59,7 +59,7 @@ export class MacComputerDriver implements ComputerController {
     if (status === 'denied' || status === 'restricted') {
       throw new Error(
         'macOS Screen Recording permission is denied, so screenshots would only show the wallpaper. ' +
-          'Grant it in System Settings > Privacy & Security > Screen Recording (add/enable Ion — or Electron when running from source), then retry.'
+          'Grant it in System Settings > Privacy & Security > Screen Recording (add/enable Ion - or Electron when running from source), then retry.'
       )
     }
     await mkdir(SCREENSHOTS_DIR, { recursive: true })
@@ -180,7 +180,7 @@ export class MacComputerDriver implements ComputerController {
         if (win && !win.isDestroyed()) win.hide()
       }, 600)
     } catch {
-      // Purely cosmetic — never fail the action over the ripple.
+      // Purely cosmetic - never fail the action over the ripple.
     }
   }
 }
