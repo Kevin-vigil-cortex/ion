@@ -15,11 +15,19 @@ const versionFiles = [
   'packages/proxy/package.json',
   'packages/xai/package.json'
 ]
+const lockfilePaths = ['', 'apps/desktop', 'packages/agent', 'packages/proxy', 'packages/xai']
 
-const versions = versionFiles.map((file) => ({
-  file,
-  version: JSON.parse(readFileSync(join(__dirname, '..', file), 'utf8')).version
-}))
+const lockfile = JSON.parse(readFileSync(join(__dirname, '..', 'package-lock.json'), 'utf8'))
+const versions = [
+  ...versionFiles.map((file) => ({
+    file,
+    version: JSON.parse(readFileSync(join(__dirname, '..', file), 'utf8')).version
+  })),
+  ...lockfilePaths.map((path) => ({
+    file: `package-lock.json#packages[${JSON.stringify(path)}]`,
+    version: lockfile.packages?.[path]?.version
+  }))
+]
 const version = versions[0].version
 const tag = `v${version}`
 
