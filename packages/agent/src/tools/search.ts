@@ -5,7 +5,7 @@ import { resolveInWorkspace, displayPath } from './paths'
 import { loadIgnoreSet } from '../ignore'
 
 const MAX_MATCHES = 200
-/** Hard cap on one grep scan — a pathological regex must not hang the loop. */
+/** Hard cap on one grep scan - a pathological regex must not hang the loop. */
 const GREP_BUDGET_MS = 10_000
 
 function str(args: Record<string, unknown>, key: string): string {
@@ -31,7 +31,7 @@ function invalidGlob(pattern: string): ToolResult | null {
 export const globTool: Tool = {
   name: 'glob',
   description:
-    'Find files matching a glob pattern (e.g. "src/**/*.ts"). Recursive filenames only — use list_dir for one folder, find_path before a workspace is open, grep for contents.',
+    'Find files matching a glob pattern (e.g. "src/**/*.ts"). Recursive filenames only - use list_dir for one folder, find_path before a workspace is open, grep for contents.',
   dangerous: false,
   parameters: {
     type: 'object',
@@ -159,7 +159,7 @@ export const grepTool: Tool = {
     if (total > results.length) notes.push(`[${total - results.length} more matches not shown]`)
     if (outOfTime) {
       notes.push(
-        `[stopped after ${GREP_BUDGET_MS / 1000}s — narrow the pattern, glob, or path to finish]`
+        `[stopped after ${GREP_BUDGET_MS / 1000}s - narrow the pattern, glob, or path to finish]`
       )
     }
     const suffix = notes.length ? `\n\n${notes.join('\n')}` : ''

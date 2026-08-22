@@ -35,7 +35,7 @@ export function codeReviewArgs(opts: CodeReviewOptions = {}): string[] {
 function clip(text: string): string {
   const t = text.trimEnd()
   if (t.length <= MAX_OUTPUT) return t
-  return t.slice(0, MAX_OUTPUT) + `\n\n[truncated — ${t.length} chars]`
+  return t.slice(0, MAX_OUTPUT) + `\n\n[truncated - ${t.length} chars]`
 }
 
 /**
@@ -79,7 +79,7 @@ export const codeReviewTool: Tool = {
     'Run CodeRabbit on the workspace git diff and return findings. ' +
     'Default is uncommitted changes. Use after a meaningful edit set or when the user asks to review. ' +
     'Fix real issues; skip false positives. Prefer this over run_terminal for coderabbit.',
-  // Uploads the workspace diff to CodeRabbit's service — approval-gated like
+  // Uploads the workspace diff to CodeRabbit's service - approval-gated like
   // the other tools whose effects leave the machine.
   dangerous: true,
   parameters: {

@@ -8,7 +8,7 @@ const MAX_OUTPUT_BYTES = 64 * 1024
 export const runTerminalTool: Tool = {
   name: 'run_terminal',
   description:
-    'Run a shell command in the workspace root. Prefer file tools (read_file/edit_file/glob/grep) over shell for file work. Output is capped at 64KB — pipe to tail if you need the end (e.g. `cmd 2>&1 | tail -80`). Times out after 60s unless timeout_ms is set.',
+    'Run a shell command in the workspace root. Prefer file tools (read_file/edit_file/glob/grep) over shell for file work. Output is capped at 64KB - pipe to tail if you need the end (e.g. `cmd 2>&1 | tail -80`). Times out after 60s unless timeout_ms is set.',
   dangerous: true,
   parameters: {
     type: 'object',

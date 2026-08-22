@@ -2,7 +2,7 @@ import type { Tool } from './types'
 
 /**
  * Computer-use tools: OS-level screen/mouse/keyboard control. The agent core
- * stays Electron/OS-free — the desktop app implements
+ * stays Electron/OS-free - the desktop app implements
  * {@link ComputerController} (macOS driver first) and injects it via
  * {@link createComputerTools}. Every tool is `dangerous: true` so each action
  * is approval-gated unless the user opts into auto-approval, and the whole
@@ -20,7 +20,7 @@ export interface ComputerScreenshot {
 
 /**
  * Host implementation of OS control. Coordinates are logical screen points
- * with the origin at the top-left of the main display — the same space the
+ * with the origin at the top-left of the main display - the same space the
  * screenshots are scaled to, so what the model sees maps 1:1 to where it
  * clicks. Implementations must move the real cursor visibly (small steps,
  * never teleport) and should throw errors with actionable permission
@@ -49,7 +49,7 @@ export function createComputerTools(controller: ComputerController): Tool[] {
   const screenshot: Tool = {
     name: 'computer_screenshot',
     description:
-      'Capture the entire screen. The image is attached and is scaled so its pixels equal logical screen coordinates — use positions you see in it directly with computer_move_mouse / computer_click. Take a fresh screenshot after every significant UI change.',
+      'Capture the entire screen. The image is attached and is scaled so its pixels equal logical screen coordinates - use positions you see in it directly with computer_move_mouse / computer_click. Take a fresh screenshot after every significant UI change.',
     dangerous: true,
     requiresWorkspace: false,
     parameters: { type: 'object', properties: {}, additionalProperties: false },

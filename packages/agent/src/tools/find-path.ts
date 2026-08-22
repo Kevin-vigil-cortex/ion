@@ -47,7 +47,7 @@ export const findPathTool: Tool = {
   name: 'find_path',
   description:
     'Search the user\'s home directory for files or folders whose NAME contains a query ' +
-    '(case-insensitive). Works without a workspace — use kind:"folder" for project names, ' +
+    '(case-insensitive). Works without a workspace - use kind:"folder" for project names, ' +
     'then open the hit with open_workspace. Optional root (e.g. "~/Documents") narrows the walk. ' +
     `Returns up to ${MAX_RESULTS} absolute paths, shallowest first. Names only, not contents.`,
   dangerous: false,
@@ -88,7 +88,7 @@ export const findPathTool: Tool = {
           `No ${kind === 'any' ? 'files or folders' : kind + 's'} named like "${query}" ` +
           `found under ${root} (searched ${MAX_DEPTH} levels deep, skipping hidden and system folders).` +
           (truncated
-            ? ' Search stopped early — retry with a more specific query or a narrower root (e.g. "~/Documents").'
+            ? ' Search stopped early - retry with a more specific query or a narrower root (e.g. "~/Documents").'
             : '')
       }
     }
@@ -132,7 +132,7 @@ async function search(
       try {
         entries = await fs.readdir(dir, { withFileTypes: true })
       } catch {
-        continue // unreadable dir (permissions) — skip, keep walking
+        continue // unreadable dir (permissions) - skip, keep walking
       }
       for (const entry of entries) {
         const name = entry.name

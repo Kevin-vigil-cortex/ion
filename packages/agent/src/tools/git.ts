@@ -37,7 +37,7 @@ async function ensureRepo(cwd: string, signal?: AbortSignal): Promise<string | n
 
 function clip(text: string, cap = MAX_DIFF_CHARS): string {
   if (text.length <= cap) return text
-  return text.slice(0, cap) + `\n\n[truncated — ${text.length} chars]`
+  return text.slice(0, cap) + `\n\n[truncated - ${text.length} chars]`
 }
 
 /** Status + staged/unstaged diffs for @diff / the git_diff tool. */
