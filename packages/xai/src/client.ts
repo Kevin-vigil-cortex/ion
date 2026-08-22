@@ -38,7 +38,7 @@ export interface XaiClientConfig {
    */
   temperature?: number
   /**
-   * Cap on generated tokens (output + reasoning). Left unset by default —
+   * Cap on generated tokens (output + reasoning). Left unset by default -
    * xAI applies its own 128k default, which is the sensible ceiling here.
    */
   maxOutputTokens?: number
@@ -124,7 +124,7 @@ export class XaiModelClient implements LanguageModel {
       stream: true,
       temperature: this.temperature,
       // Local-only: don't store turns on xAI. Encrypted reasoning is NOT
-      // requested — replaying a reconstructed reasoning/compaction blob
+      // requested - replaying a reconstructed reasoning/compaction blob
       // 400s ("Could not decode the compaction blob"). Function-call pairs
       // are enough for the tool loop.
       store: false,
@@ -284,7 +284,7 @@ export class XaiModelClient implements LanguageModel {
 /**
  * Translate one domain item into Responses input items. Tool results that
  * carry images expand into the function_call_output plus a follow-up user
- * message with `input_image` parts — the pattern the Responses API expects,
+ * message with `input_image` parts - the pattern the Responses API expects,
  * since function outputs themselves are text-only. Grok 4+ models accept
  * base64 data URIs (PNG/JPEG, `detail: 'high'` for dense screenshots).
  */
@@ -293,7 +293,7 @@ function toInputItems(item: ConversationItem): ResponsesInputItem[] {
     case 'message':
       return [{ role: item.role, content: messageContent(item) }]
     case 'reasoning':
-      // Never echo reconstructed reasoning/compaction blobs — xAI rejects
+      // Never echo reconstructed reasoning/compaction blobs - xAI rejects
       // anything that isn't a verbatim compact-response item.
       return []
     case 'checkpoint':
