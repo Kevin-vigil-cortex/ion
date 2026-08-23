@@ -1,8 +1,9 @@
 # Ion
 
 **Ion** is a shareable, open-source AI **agent harness** for xAI's Grok models,
-wrapped in a Cursor-style desktop app. It runs entirely on your machine and supports two ways
-to authenticate:
+wrapped in a Cursor-style desktop app. The desktop app, workspace access, and
+tool execution run locally. Model requests are sent to xAI. Ion supports two
+ways to authenticate:
 
 - **xAI API key** - pay-per-token billing (`console.x.ai`).
 - **SuperGrok OAuth** - sign in with your SuperGrok / X Premium+ subscription; no
