@@ -12,6 +12,10 @@ ways to authenticate:
 The agent core, the provider/auth layer, and the optional local proxy are cleanly
 separated so you can reuse or replace any piece.
 
+![Ion home screen on macOS](docs/images/ion-home.png)
+
+*Ion home screen on macOS.*
+
 > Status: early but functional. Runs from source (`npm run dev`), packages
 > locally (`npm run package`), and ships auto-updating builds from the canonical
 > [GitHub Releases](https://github.com/Kevin-vigil-cortex/ion/releases) page
